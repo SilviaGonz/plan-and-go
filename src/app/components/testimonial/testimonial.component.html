@@ -1,0 +1,26 @@
+<section class="testimonials">
+  <h1>Lo que dicen nuestros viajeros</h1>
+
+  <div class="testimonials__carousel">
+    <button class="testimonials__arrow" (click)="prev()">&#8249;</button>
+
+    <app-testimonial-card
+      [rating]="testimonials[current].rating"
+      [text]="testimonials[current].text"
+      [name]="testimonials[current].name"
+      [role]="testimonials[current].role"
+    />
+
+    <button class="testimonials__arrow" (click)="next()">&#8250;</button>
+  </div>
+
+  <div class="testimonials__dots">
+    @for (t of testimonials; track $index) {
+      <span
+        class="dot"
+        [class.dot--active]="$index === current"
+        (click)="goTo($index)"
+      ></span>
+    }
+  </div>
+</section>

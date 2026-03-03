@@ -1,0 +1,18 @@
+<div class="testimonial">
+  <div class="testimonial__stars">
+    <span
+      *ngFor="let filled of stars"
+      class="star"
+      [class.star--filled]="filled"
+      >★</span
+    >
+  </div>
+  <p class="testimonial__text">"{{ text }}"</p>
+  <div class="testimonial__author">
+    <div class="testimonial__avatar">{{ initials }}</div>
+    <div>
+      <p class="testimonial__name">{{ name }}</p>
+      <p class="testimonial__role">{{ role }}</p>
+    </div>
+  </div>
+</div>
