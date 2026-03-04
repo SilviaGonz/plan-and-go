@@ -1,0 +1,91 @@
+<section class="hero">
+  <div class="hero__content">
+    <h1 class="hero__title">
+      Organiza tus viajes en grupo de forma fácil y democrática
+    </h1>
+    <p class="hero__subtitle">
+      La plataforma colaborativa para planificar, gestionar y disfrutar de
+      viajes grupales sin complicaciones
+    </p>
+    <div class="hero__actions">
+      <app-button-with-bg
+        text="Regístrate"
+        route="/register"
+        variant="filled"
+      ></app-button-with-bg>
+      <app-button-without-bg
+        text="Inicia sesión"
+        route="/login"
+      ></app-button-without-bg>
+    </div>
+  </div>
+</section>
+<section class="cards">
+  <div class="cards__content">
+    <h1>¿Por qué elegir Plan&Go?</h1>
+  </div>
+  <div class="cards__grid">
+    <app-card
+      icon="assets/icons/vote.png"
+      title="Votaciones democráticas"
+      description="Propón destinos y actividades. Todos votan y deciden juntos de forma transparente."
+    />
+    <app-card
+      icon="assets/icons/money.png"
+      title="Gestión de gastos"
+      description="Divide gastos automáticamente. Sabe siempre quién debe qué a quién."
+    />
+    <app-card
+      icon="assets/icons/travel.png"
+      title="Rutas optimizadas con IA"
+      description="Planifica itinerarios inteligentes que maximizan tu tiempo y minimizan desplazamientos."
+    />
+    <app-card
+      icon="assets/icons/chat.png"
+      title="Chat en tiempo real"
+      description="Comunícate con tu grupo sin salir de la plataforma. Todo en un solo lugar."
+    />
+  </div>
+</section>
+<section class="points">
+  <div class="points__content">
+    <h1>¿Cómo funciona Plan&Go?</h1>
+    <div class="points__grid">
+      <app-step-card
+        number="1"
+        title="Crea tu grupo"
+        description="Registra tu viaje e invita a tus compañeros de aventura"
+      />
+      <app-step-card
+        number="2"
+        title="Planifica juntos"
+        description="Propón actividades y votad democráticamente"
+      />
+      <app-step-card
+        number="3"
+        title="Gestiona gastos"
+        description="Registra y divide gastos automáticamente"
+      />
+      <app-step-card
+        number="4"
+        title="¡Disfruta!"
+        description="Viaja organizado. Solo te queda crear recuerdos inolvidables"
+      />
+    </div>
+  </div>
+</section>
+<app-testimonial></app-testimonial>
+<section class="finally-text">
+  <div class="finally-text__content">
+    <h1>¿Listo para tu próxima aventura?</h1>
+    <p class="finally-text__subtitle">
+      Únete gratis y comienza a planificar viajes increíbles en grupo hoy mismo
+    </p>
+    <app-button-with-bg
+      text="Regístrate"
+      route="/register"
+      variant="outline"
+    ></app-button-with-bg>
+  </div>
+</section>
+<app-footer></app-footer>
