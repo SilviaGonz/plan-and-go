@@ -1,7 +1,11 @@
 <button
-  class="btn btn--primary"
-  [routerLink]="route"
-  [ngStyle]="{ 'border-color': color, 'color': color }"
+  [class]="variant === 'filled' ? 'btn btn--filled' : 'btn btn--outline'"
+  [attr.routerLink]="route ? route : null"
+  [type]="type"
+  [disabled]="disabled"
+  [ngStyle]="
+    variant === 'outline' ? { 'border-color': color, color: color } : {}
+  "
 >
-  {{ text }}
+  {{ disabled && loadingText ? loadingText : text }}
 </button>
