@@ -1,0 +1,82 @@
+<div class="register">
+  <div class="register__box">
+    <div class="register__header">
+      <img
+        src="../../../../assets/icons/logo.png"
+        alt="Plan&Go"
+        class="register__logo"
+      />
+      <h3 class="register__subtitle">Crea tu cuenta y empieza a viajar</h3>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="register__form">
+      <app-form-input
+        label="Nombre completo"
+        placeholder="Nombre y apellidos"
+        type="text"
+        [control]="nameControl"
+        errorMessage="El nombre es obligatorio"
+      />
+
+      <app-form-input
+        label="Email"
+        placeholder="tuemail@gmail.com"
+        type="email"
+        [control]="emailControl"
+        errorMessage="Introduce un email válido"
+      />
+
+      <app-form-input
+        label="Contraseña"
+        placeholder="Mínimo 8 caracteres"
+        type="password"
+        [control]="passwordControl"
+        errorMessage="Mínimo 8 caracteres"
+      />
+
+      <app-form-input
+        label="Confirmar contraseña"
+        placeholder="Repite tu contraseña"
+        type="password"
+        [control]="confirmPasswordControl"
+        errorMessage="Las contraseñas no coinciden"
+      />
+      <span
+        class="form__error"
+        *ngIf="form.errors?.['mismatch'] && confirmPasswordControl.touched"
+      >
+        Las contraseñas no coinciden
+      </span>
+
+      <div class="form__check">
+        <input formControlName="terms" type="checkbox" id="terms" />
+        <label for="terms">
+          Acepto los <a href="#">términos y condiciones</a> y la
+          <a href="#">política de privacidad</a>
+        </label>
+      </div>
+      <span
+        class="form__error"
+        *ngIf="form.get('terms')?.invalid && form.get('terms')?.touched"
+      >
+        Debes aceptar los términos y condiciones
+      </span>
+
+      <p class="form__error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+      <p class="form__success" *ngIf="successMessage">{{ successMessage }}</p>
+      <div class="register__actions">
+        <app-button-with-bg
+          text="Regístrate"
+          loadingText="Registrando..."
+          type="submit"
+          [disabled]="loading"
+          variant="outline"
+        />
+      </div>
+    </form>
+    <div class="register__footer">
+      <p>¿Ya tienes una cuenta? <a routerLink="/login">Inicia Sesión</a></p>
+    </div>
+  </div>
+</div>
