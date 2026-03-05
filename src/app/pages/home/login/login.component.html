@@ -1,0 +1,47 @@
+<div class="register">
+  <div class="register__box">
+    <div class="register__header">
+      <img
+        src="../../../../assets/icons/logo.png"
+        alt="Plan&Go"
+        class="register__logo"
+      />
+      <h3 class="register__subtitle">Inicia sesión y empieza a viajar</h3>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="register__form">
+
+      <app-form-input
+        label="Email"
+        placeholder="tuemail@gmail.com"
+        type="email"
+        [control]="emailControl"
+        errorMessage="Introduce un email válido"
+      />
+
+      <app-form-input
+        label="Contraseña"
+        placeholder="Mínimo 8 caracteres"
+        type="password"
+        [control]="passwordControl"
+        errorMessage="Mínimo 8 caracteres"
+      />
+
+      <p class="form__error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+      <p class="form__success" *ngIf="successMessage">{{ successMessage }}</p>
+      <div class="register__actions">
+        <app-button-with-bg
+          text="Inicia Sesión"
+          loadingText="Iniciando sesión..."
+          type="submit"
+          [disabled]="loading"
+          variant="outline"
+        />
+      </div>
+    </form>
+    <div class="register__footer">
+      <p>¿Todavía no tienes una cuenta? <a routerLink="/register">Regístrate</a></p>
+    </div>
+  </div>
+</div>
