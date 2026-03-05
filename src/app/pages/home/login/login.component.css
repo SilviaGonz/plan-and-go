@@ -1,0 +1,91 @@
+.register {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  padding: 2rem;
+}
+
+.register__box {
+  background: var(--color-white);
+  border-radius: 16px;
+  padding: 2.5rem 3rem;
+  width: 100%;
+  max-width: 500px;
+  border: 1px solid #eee;
+}
+
+.register__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.register__logo {
+  width: 150px;
+  margin-bottom: 0.5rem;
+}
+
+.register__subtitle {
+  color: var(--color-primary);
+  font-weight: 400;
+}
+
+.register__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form__error {
+  font-size: 0.78rem;
+  color: red;
+}
+
+.form__check {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--color-text-subtle);
+}
+
+.form__check input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.form__check a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.register__footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-primary);
+  font-size: 0.9rem;
+  color: var(--color-text-subtle);
+}
+
+.register__footer a {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register__actions {
+  display: flex;
+  justify-content: center;
+}
+
+.form__success {
+  font-size: 0.88rem;
+  color: green;
+  text-align: center;
+}

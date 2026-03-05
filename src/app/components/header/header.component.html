@@ -1,0 +1,16 @@
+<header class="header">
+  <div class="header__search">
+    <input type="text" placeholder="Buscar viajes, miembros..." />
+    <i class="bi bi-search"></i>
+  </div>
+
+  <div class="header__actions">
+    <button class="header__new-trip" routerLink="/trips/new">
+      + Nuevo viaje
+    </button>
+    <div class="header__profile" routerLink="/profile">
+      <div class="header__avatar">{{ userInitial }}</div>
+      <span>Ver perfil</span>
+    </div>
+  </div>
+</header>

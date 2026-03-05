@@ -1,0 +1,31 @@
+.dashboard {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.dashboard__welcome h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 0.5rem;
+}
+
+.dashboard__welcome h2 span {
+  color: var(--color-primary);
+}
+
+.dashboard__welcome p {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.dashboard__summary {
+  display: flex;
+  align-items: center;
+ justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
