@@ -1,6 +1,6 @@
 <button
   [class]="variant === 'filled' ? 'btn btn--filled' : 'btn btn--outline'"
-  [attr.routerLink]="route ? route : null"
+  [routerLink]="route || null"
   [type]="type"
   [disabled]="disabled"
   [ngStyle]="

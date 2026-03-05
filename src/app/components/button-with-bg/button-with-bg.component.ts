@@ -5,7 +5,7 @@ import { NgStyle } from '@angular/common';
 @Component({
   selector: 'app-button-with-bg',
   standalone: true,
-  imports: [NgStyle],
+  imports: [RouterLink, NgStyle],
   templateUrl: './button-with-bg.component.html',
   styleUrl: './button-with-bg.component.css',
 })
