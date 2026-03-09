@@ -1,0 +1,14 @@
+<div
+  class="itinerary-card"
+  [class.itinerary-card--active]="selected"
+  (click)="select.emit(value)"
+>
+  <div class="itinerary-card__left">
+    <i [class]="'bi ' + icon"></i>
+    <div class="itinerary-card__text">
+      <span class="itinerary-card__title">{{ title }}</span>
+      <p class="itinerary-card__desc">{{ description }}</p>
+    </div>
+  </div>
+  <i class="bi bi-arrow-right itinerary-card__arrow"></i>
+</div>
