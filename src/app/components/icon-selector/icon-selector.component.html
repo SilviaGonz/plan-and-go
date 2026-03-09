@@ -1,0 +1,11 @@
+<div class="icon-selector">
+  <button
+    *ngFor="let icon of icons"
+    type="button"
+    class="icon-selector__btn"
+    [class.icon-selector__btn--active]="selected === icon"
+    (click)="select(icon)"
+  >
+    <i [class]="'bi ' + icon"></i>
+  </button>
+</div>
