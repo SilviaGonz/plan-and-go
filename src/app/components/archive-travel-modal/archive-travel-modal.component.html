@@ -1,0 +1,43 @@
+<div class="modal-overlay" (click)="cancel.emit()">
+  <div class="archive-modal" (click)="$event.stopPropagation()">
+    <div class="archive-modal__header">
+      <i class="bi bi-archive"></i>
+      <h2>¿Archivar este viaje?</h2>
+      <p>El viaje se moverá a la sección de archivados</p>
+    </div>
+
+    <div class="archive-modal__info">
+      <p class="archive-modal__info-title">
+        <strong>! &nbsp; ¿Qué significa archivar?</strong>
+      </p>
+      <ul>
+        <li>El viaje se ocultará de la lista principal</li>
+        <li>Podrás acceder a él desde <strong>Viajes archivados</strong></li>
+        <li>Los miembros seguirán teniendo acceso</li>
+        <li>Podrás restaurarlo cuando quieras</li>
+      </ul>
+    </div>
+
+    <div class="archive-modal__trip">
+      <div class="archive-modal__trip-title">
+        <i [class]="'bi ' + travel.icon"></i>
+        <h3>{{ travel.name }}</h3>
+      </div>
+      <div class="archive-modal__trip-info">
+        <span><i class="bi bi-calendar3"></i> {{ formattedDates }}</span>
+        <span
+          ><i class="bi bi-people"></i> {{ travel.membersCount }} miembros</span
+        >
+      </div>
+    </div>
+
+    <div class="archive-modal__footer">
+      <button class="archive-modal__cancel" (click)="cancel.emit()">
+        Cancelar
+      </button>
+      <button class="archive-modal__confirm" (click)="confirm.emit()">
+        Archivar
+      </button>
+    </div>
+  </div>
+</div>
