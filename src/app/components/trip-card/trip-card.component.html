@@ -1,0 +1,37 @@
+<div class="trip-card" (click)="closeMenu()">
+  <div class="trip-card__main">
+    <div class="trip-card__left">
+      <div class="trip-card__title">
+        <i [class]="'bi ' + icon"></i>
+        <h3>{{ name }}</h3>
+      </div>
+      <div class="trip-card__info">
+        <span><i class="bi bi-calendar3"></i> {{ formattedDates }}</span>
+        <span><i class="bi bi-people"></i> {{ members }} miembros</span>
+        <span><i class="bi bi-credit-card"></i> 90€</span>
+      </div>
+    </div>
+
+    <div class="trip-card__actions">
+      <div class="trip-card__menu-wrapper">
+        <button class="trip-card__menu-btn" (click)="toggleMenu($event)">
+          <i class="bi bi-three-dots-vertical"></i>
+        </button>
+        <div class="trip-card__menu" *ngIf="showMenu">
+          <button (click)="edit.emit(id); closeMenu()">
+            <i class="bi bi-pencil"></i> Editar viaje
+          </button>
+          <button class="warning" (click)="archive.emit(id); closeMenu()">
+            <i class="bi bi-archive"></i> Archivar viaje
+          </button>
+          <button class="danger" (click)="delete.emit(id); closeMenu()">
+            <i class="bi bi-trash"></i> Eliminar viaje
+          </button>
+        </div>
+      </div>
+      <button class="trip-card__open" [routerLink]="'/trips/' + id">
+        Abrir
+      </button>
+    </div>
+  </div>
+</div>

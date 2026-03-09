@@ -1,0 +1,25 @@
+<div class="archived-card">
+  <div class="archived-card__main">
+    <div class="archived-card__left">
+      <div class="archived-card__title">
+        <i [class]="'bi ' + icon"></i>
+        <h3>{{ name }}</h3>
+      </div>
+      <div class="archived-card__info">
+        <span><i class="bi bi-calendar3"></i> {{ formattedDates }}</span>
+        <span><i class="bi bi-people"></i> {{ members }} miembros</span>
+      </div>
+    </div>
+    <div class="archived-card__actions">
+      <button class="btn-restore" (click)="restore.emit(id)">
+        <i class="bi bi-arrow-counterclockwise"></i> Restaurar
+      </button>
+      <button class="btn-details" [routerLink]="'/trips/' + id">
+        Detalles
+      </button>
+      <button class="btn-delete" (click)="delete.emit(id)">
+        <i class="bi bi-trash"></i> Eliminar
+      </button>
+    </div>
+  </div>
+</div>

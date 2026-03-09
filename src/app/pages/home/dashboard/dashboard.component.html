@@ -10,18 +10,138 @@
   <div class="dashboard__summary">
     <app-summary-card
       icon="bi bi-airplane"
-      [value]="3"
+      [value]="activeTrips"
       label="viajes activos"
-    ></app-summary-card>
+    />
     <app-summary-card
       icon="bi bi-alarm"
-      [value]="12"
+      [value]="daysUntilNextTrip"
       label="días hasta el próximo viaje"
-    ></app-summary-card>
+    />
     <app-summary-card
       icon="bi bi-box2"
       [value]="3"
       label="votaciones pendientes"
-    ></app-summary-card>
+    />
   </div>
+
+  <div class="next-trip" *ngIf="nextTrip">
+    <p class="next-trip__label">TU PRÓXIMO VIAJE</p>
+    <div class="next-trip__title">
+      <i [class]="'bi ' + nextTrip.icon"></i>
+      <h2>{{ nextTrip.name }}</h2>
+    </div>
+    <div class="next-trip__info">
+      <span><i class="bi bi-calendar3"></i> {{ formattedDates }}</span>
+      <span><i class="bi bi-alarm"></i> en {{ daysUntilNextTrip }} días</span>
+      <span
+        ><i class="bi bi-people"></i> {{ nextTrip.membersCount }} miembros</span
+      >
+    </div>
+    <app-button-with-bg
+      text="Ver detalles del viaje"
+      [route]="'/trips/' + nextTrip.id"
+      variant="outline"
+    />
+  </div>
+
+  <div class="next-trip next-trip--empty" *ngIf="!nextTrip">
+    <p class="next-trip__label">TU PRÓXIMO VIAJE</p>
+    <p class="next-trip__empty">No tienes viajes próximos. ¡Crea uno!</p>
+  </div>
+
+  <div class="dashboard__trips">
+    <div class="dashboard__trips-header">
+      <h1 class="dashboard__section-title">
+        {{ showingArchived ? "Tus viajes archivados" : "Mis viajes" }}
+      </h1>
+      <button
+        class="dashboard__archived-btn"
+        (click)="openArchivedModal()"
+        *ngIf="archivedCount > 0 && !showingArchived"
+      >
+        Viajes archivados ({{ archivedCount }})
+      </button>
+      <button
+        class="dashboard__archived-btn dashboard__archived-btn--close"
+        (click)="showingArchived = false"
+        *ngIf="showingArchived"
+      >
+        <i class="bi bi-x-lg"></i> Cerrar archivados
+      </button>
+    </div>
+
+    <!-- Lista normal -->
+    <div class="dashboard__trips-list" *ngIf="!showingArchived">
+      <app-trip-card
+        *ngFor="let trip of travels"
+        [id]="trip.id!"
+        [icon]="trip.icon"
+        [name]="trip.name"
+        [startDate]="trip.startDate"
+        [endDate]="trip.endDate"
+        [members]="trip.membersCount"
+        (edit)="onEditTrip($event)"
+        (archive)="onArchiveTrip($event)"
+        (delete)="onDeleteTrip($event)"
+      />
+    </div>
+
+    <!-- Lista archivados -->
+    <div class="dashboard__trips-list" *ngIf="showingArchived">
+      <app-archived-trip-card
+        *ngFor="let trip of archivedTravels"
+        [id]="trip.id!"
+        [icon]="trip.icon"
+        [name]="trip.name"
+        [startDate]="trip.startDate"
+        [endDate]="trip.endDate"
+        [members]="trip.membersCount"
+        (restore)="onRestoreTrip($event)"
+        (delete)="onDeleteTrip($event)"
+      />
+    </div>
+  </div>
+
+  <!-- Modal nuevo viaje -->
+  <app-propose-travel-modal
+    *ngIf="showModal"
+    (close)="showModal = false"
+    (created)="onTravelCreated($event)"
+  />
+
+  <!-- Modal editar viaje -->
+  <app-propose-travel-modal
+    *ngIf="showEditModal"
+    [travelId]="editingTravel?.id || null"
+    [travelData]="editingTravel"
+    (close)="showEditModal = false; editingTravel = null"
+    (created)="onTravelUpdated($event)"
+  />
+
+  <!-- Modal eliminar -->
+  <app-delete-travel-modal
+    *ngIf="showDeleteModal && deletingTravel"
+    [travel]="deletingTravel!"
+    (cancel)="showDeleteModal = false; deletingTravel = null"
+    (confirm)="confirmDelete()"
+  />
+
+  <!-- Modal archivar -->
+  <app-archive-travel-modal
+    *ngIf="showArchiveModal && archivingTravel"
+    [travel]="archivingTravel!"
+    (cancel)="showArchiveModal = false; archivingTravel = null"
+    (confirm)="confirmArchive()"
+  />
+
+  <!-- Toast dinámico -->
+  <app-toast-notification
+    *ngIf="showToast"
+    [message]="toastMessage"
+    [submessage]="toastSubmessage"
+    [icon]="toastIcon"
+    [type]="toastType"
+    (closed)="showToast = false"
+  />
 </div>

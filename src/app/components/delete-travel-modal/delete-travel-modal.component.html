@@ -1,0 +1,49 @@
+<div class="modal-overlay" (click)="cancel.emit()">
+  <div class="delete-modal" (click)="$event.stopPropagation()">
+    <div class="delete-modal__header">
+      <i class="bi bi-exclamation-triangle"></i>
+      <h2>¿Eliminar viaje permanentemente?</h2>
+      <p>Esta acción <strong>NO</strong> se puede deshacer</p>
+    </div>
+
+    <div class="delete-modal__warning">
+      <p><strong>Se eliminará permanentemente:</strong></p>
+      <ul>
+        <li>Todo el itinerario</li>
+        <li>Chat y mensajes</li>
+        <li>Votaciones</li>
+        <li>Todos los gastos</li>
+        <li>Toda la información</li>
+        <li>Fotos</li>
+      </ul>
+    </div>
+
+    <div class="delete-modal__trip">
+      <div class="delete-modal__trip-title">
+        <i [class]="'bi ' + travel.icon"></i>
+        <h3>{{ travel.name }}</h3>
+      </div>
+      <div class="delete-modal__trip-info">
+        <span><i class="bi bi-calendar3"></i> {{ formattedDates }}</span>
+        <span
+          ><i class="bi bi-people"></i> {{ travel.membersCount }} miembros</span
+        >
+      </div>
+    </div>
+
+    <div class="delete-modal__footer">
+      <button class="delete-modal__cancel" (click)="cancel.emit()">
+        Cancelar
+      </button>
+      <button class="delete-modal__confirm" (click)="confirm.emit()">
+        Eliminar permanentemente
+      </button>
+    </div>
+
+    <p class="delete-modal__hint">
+      <i class="bi bi-lightbulb"></i>
+      <strong>Recuerda:</strong> Puedes archivar el viaje si no quieres
+      eliminarlo
+    </p>
+  </div>
+</div>

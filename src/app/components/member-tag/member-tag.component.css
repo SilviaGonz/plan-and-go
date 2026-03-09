@@ -1,0 +1,44 @@
+.member-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  background: var(--color-white);
+}
+
+.member-tag__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.member-tag__email {
+  font-size: 0.85rem;
+  color: var(--color-text);
+  flex: 1;
+}
+
+.member-tag__remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-subtle);
+  padding: 0;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.member-tag__remove:hover {
+  color: red;
+}

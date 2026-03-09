@@ -1,0 +1,222 @@
+<div class="modal-overlay" (click)="close.emit()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal__header">
+      <div>
+        <span class="modal__title">{{
+          isEditMode ? "Editar viaje:" : "Proponer nuevo viaje:"
+        }}</span>
+        <span class="modal__subtitle">{{
+          isEditMode
+            ? "Modifica los detalles del viaje"
+            : "Completa los detalles del viaje que quieres proponer al grupo"
+        }}</span>
+      </div>
+      <button type="button" class="modal__close" (click)="close.emit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="modal__body">
+      <div class="modal__columns">
+        <!-- Columna izquierda -->
+        <div class="modal__left">
+          <div class="modal__section">
+            <h4 class="modal__section-title">Información básica</h4>
+
+            <div class="form__group">
+              <label>Icono del viaje *</label>
+              <app-icon-selector
+                [selected]="selectedIcon"
+                (selectedChange)="selectedIcon = $event"
+              />
+            </div>
+
+            <app-form-input
+              label="Nombre del viaje *"
+              placeholder="Ej. Viaje verano"
+              type="text"
+              [control]="nameControl"
+              errorMessage="El nombre es obligatorio"
+            />
+
+            <app-form-textarea
+              label="Descripción detallada"
+              placeholder="Describe el viaje, qué tipo de experiencias quieres vivir, objetivos del grupo..."
+              [maxLength]="300"
+              [control]="descriptionControl"
+            />
+
+            <div class="modal__dates">
+              <app-form-input
+                label="Fecha de inicio *"
+                type="date"
+                [control]="startDateControl"
+                errorMessage="La fecha de inicio es obligatoria"
+                [min]="today"
+              />
+              <app-form-input
+                label="Fecha de fin *"
+                type="date"
+                [control]="endDateControl"
+                errorMessage="La fecha de fin es obligatoria"
+                [min]="startDateControl.value || today"
+              />
+            </div>
+
+            <div class="modal__duration" *ngIf="tripDuration">
+              <i class="bi bi-clock"></i>
+              {{ tripDuration }}
+            </div>
+          </div>
+
+          <div class="modal__section">
+            <h4 class="modal__section-title">Itinerario del viaje</h4>
+            <div class="modal__itinerary-options">
+              <app-itinerary-option-card
+                icon="bi-list-task"
+                title="Crear itinerario manualmente"
+                description="Añade actividades día a día según tu propio plan. Ideal si ya tienes todo organizado."
+                value="manual"
+                [selected]="selectedItinerary === 'manual'"
+                (select)="selectedItinerary = $event"
+              />
+              <app-itinerary-option-card
+                icon="bi-robot"
+                title="Generar ruta optimizada con IA"
+                description="La IA organizará tus actividades automáticamente optimizando distancias y tiempos de viaje."
+                value="ai"
+                [selected]="selectedItinerary === 'ai'"
+                (select)="selectedItinerary = $event"
+              />
+              <app-itinerary-option-card
+                icon="bi-arrow-return-left"
+                title="Configurar después"
+                description="Crea el viaje ahora y organiza el itinerario más adelante con tu grupo."
+                value="later"
+                [selected]="selectedItinerary === 'later'"
+                (select)="selectedItinerary = $event"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna derecha -->
+        <div class="modal__right">
+          <div class="modal__section">
+            <h4 class="modal__section-title">Invitar miembros</h4>
+
+            <app-form-input
+              label="Número estimado de miembros del viaje *"
+              placeholder="Ej. 5"
+              type="number"
+              [control]="membersCountControl"
+              errorMessage="El número de miembros es obligatorio"
+            />
+
+            <div class="form__group">
+              <label>Email de los participantes</label>
+              <div class="modal__invite-row">
+                <input
+                  type="email"
+                  placeholder="email@miembro@gmail.com"
+                  [(ngModel)]="memberEmail"
+                  [ngModelOptions]="{ standalone: true }"
+                  (keydown.enter)="$event.preventDefault(); addMember()"
+                />
+                <button
+                  type="button"
+                  class="modal__invite-btn"
+                  (click)="addMember()"
+                >
+                  Invitar
+                </button>
+              </div>
+              <span class="form__error" *ngIf="memberEmailError">{{
+                memberEmailError
+              }}</span>
+              <p class="modal__hint">
+                También podrás añadir miembros una vez creado el viaje
+              </p>
+            </div>
+
+            <div class="modal__members-list" *ngIf="members.length > 0">
+              <app-member-tag
+                *ngFor="let email of members"
+                [email]="email"
+                (remove)="removeMember($event)"
+              />
+            </div>
+            <p class="modal__hint" *ngIf="members.length === 0">
+              Los miembros recibirán un correo para unirse al viaje
+            </p>
+          </div>
+
+          <div class="modal__section">
+            <h4 class="modal__section-title">
+              Añade imágenes de referencia del viaje
+            </h4>
+
+            <label class="modal__image-upload" for="imageInput">
+              <i class="bi bi-camera-fill"></i>
+              <p>
+                {{
+                  uploadingImage
+                    ? "Subiendo..."
+                    : "Arrastra una imagen aquí o haz clic para seleccionar"
+                }}
+              </p>
+              <span>PNG, JPG (max. 5MB por imagen)</span>
+              <input
+                id="imageInput"
+                type="file"
+                accept="image/*"
+                multiple
+                hidden
+                (change)="onImageSelected($event)"
+              />
+            </label>
+
+            <div class="modal__images-preview" *ngIf="imageUrls.length > 0">
+              <div class="modal__image-item" *ngFor="let url of imageUrls">
+                <img [src]="url" alt="imagen del viaje" />
+                <button type="button" (click)="removeImage(url)">
+                  <i class="bi bi-x"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal__section">
+            <h4 class="modal__section-title">Notas adicionales</h4>
+            <app-form-textarea
+              placeholder="Requisitos especiales, recomendaciones..."
+              [maxLength]="200"
+              [control]="notesControl"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal__footer">
+        <button type="button" class="modal__cancel" (click)="close.emit()">
+          Cancelar
+        </button>
+        <button type="submit" class="modal__submit" [disabled]="loading">
+          {{
+            loading
+              ? isEditMode
+                ? "Guardando..."
+                : "Creando..."
+              : isEditMode
+                ? "Guardar cambios"
+                : "Crear viaje"
+          }}
+        </button>
+      </div>
+
+      <p class="form__error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </form>
+  </div>
+</div>
