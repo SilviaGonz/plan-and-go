@@ -1,0 +1,131 @@
+:host {
+  display: block;
+}
+
+.trip-card {
+  border: 2px solid var(--color-primary);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  width: 50%;
+  background: var(--color-white);
+}
+
+.trip-card__main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.trip-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.trip-card__title i {
+  font-size: 1.2rem;
+  color: var(--color-primary);
+}
+
+.trip-card__title h3 {
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.trip-card__info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  flex-wrap: wrap;
+}
+
+.trip-card__info i {
+  margin-right: 0.3rem;
+}
+
+.trip-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.trip-card__menu-wrapper {
+  position: relative;
+}
+
+.trip-card__menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--color-text-subtle);
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.trip-card__menu-btn:hover {
+  color: var(--color-text);
+}
+
+.trip-card__menu {
+  position: absolute;
+  right: 0;
+  top: 2rem;
+  background: var(--color-white);
+  border: 1px solid #eee;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  z-index: 10;
+  min-width: 160px;
+  overflow: hidden;
+}
+
+.trip-card__menu button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--color-text);
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.trip-card__menu button:hover {
+  background: #f5f5f5;
+}
+
+.trip-card__menu button.danger {
+  color: red;
+}
+
+.trip-card__menu button.warning {
+  color: brown;
+}
+
+.trip-card__open {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 100px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.trip-card__open:hover {
+  background: var(--color-primary-dark);
+}
