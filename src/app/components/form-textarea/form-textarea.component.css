@@ -1,0 +1,40 @@
+.form__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  position: relative;
+}
+
+.form__group label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.form__group textarea {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  outline: none;
+  resize: none;
+  height: 80px;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.form__group textarea:focus {
+  border-color: var(--color-primary);
+}
+
+.form__count {
+  font-size: 0.75rem;
+  color: var(--color-text-subtle);
+  text-align: right;
+}
+
+.form__error {
+  font-size: 0.78rem;
+  color: red;
+}

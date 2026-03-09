@@ -1,11 +1,13 @@
 <div class="form__group">
   <label>{{ label }}</label>
-  <input
+  <textarea
     [formControl]="formControl"
-    [type]="type"
     [placeholder]="placeholder"
-    [min]="min"
-  />
+    [maxlength]="maxLength"
+  ></textarea>
+  <span class="form__count"
+    >{{ formControl.value?.length || 0 }}/{{ maxLength }}</span
+  >
   <span class="form__error" *ngIf="formControl.invalid && formControl.touched">
     {{ errorMessage }}
   </span>
