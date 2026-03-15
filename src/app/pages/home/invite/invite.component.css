@@ -1,0 +1,107 @@
+.invite {
+  min-height: 100vh;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.invite__card {
+  background: white;
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+
+.invite__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.invite__header .invite__logo {
+  width: 120px;
+  height: 100px;
+}
+
+.invite__header span {
+  color: var(--color-text);
+}
+
+.invite__icon {
+  font-size: 3rem;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.invite__content h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.invite__content p {
+  color: var(--color-text-subtle);
+  margin: 0 0 0.5rem;
+  margin-top: 1rem;
+}
+
+.invite__travel-name {
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.invite__btn {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.9rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s ease;
+}
+
+.invite__btn:hover { background: var(--color-primary-dark); }
+.invite__btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.invite__hint {
+  font-size: 0.8rem;
+  color: var(--color-text-subtle);
+  margin-top: 1rem;
+}
+
+.invite__error, .invite__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.invite__error i {
+  font-size: 3rem;
+  color: red;
+}
+
+.invite__success i {
+  font-size: 3rem;
+  color: green;
+}
+
+.invite__error button {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+  font-weight: 600;
+}
