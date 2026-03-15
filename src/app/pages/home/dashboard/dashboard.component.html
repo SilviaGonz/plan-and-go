@@ -20,86 +20,120 @@
     />
     <app-summary-card
       icon="bi bi-box2"
-      [value]="3"
+      [value]="pendingVotes"
       label="votaciones pendientes"
     />
   </div>
 
-  <div class="next-trip" *ngIf="nextTrip">
-    <p class="next-trip__label">TU PRÓXIMO VIAJE</p>
-    <div class="next-trip__title">
-      <i [class]="'bi ' + nextTrip.icon"></i>
-      <h2>{{ nextTrip.name }}</h2>
-    </div>
-    <div class="next-trip__info">
-      <span><i class="bi bi-calendar3"></i> {{ formattedDates }}</span>
-      <span><i class="bi bi-alarm"></i> en {{ daysUntilNextTrip }} días</span>
-      <span
-        ><i class="bi bi-people"></i> {{ nextTrip.membersCount }} miembros</span
-      >
-    </div>
-    <app-button-with-bg
-      text="Ver detalles del viaje"
-      [route]="'/trips/' + nextTrip.id"
-      variant="outline"
-    />
-  </div>
+  <div class="dashboard__main">
+    <!-- Columna izquierda -->
+    <div class="dashboard__left">
+      <div class="next-trip" *ngIf="nextTrip">
+        <p class="next-trip__label">TU PRÓXIMO VIAJE</p>
+        <div class="next-trip__title">
+          <i [class]="'bi ' + nextTrip.icon"></i>
+          <h2>{{ nextTrip.name }}</h2>
+        </div>
+        <div class="next-trip__info">
+          <span><i class="bi bi-calendar3"></i> {{ formattedDates }}</span>
+          <span
+            ><i class="bi bi-alarm"></i> en {{ daysUntilNextTrip }} días</span
+          >
+          <span
+            ><i class="bi bi-people"></i>
+            {{ nextTrip.membersCount }} miembros</span
+          >
+        </div>
+        <app-button-with-bg
+          text="Ver detalles del viaje"
+          [route]="'/trips/' + nextTrip.id"
+          variant="outline"
+        />
+      </div>
 
-  <div class="next-trip next-trip--empty" *ngIf="!nextTrip">
-    <p class="next-trip__label">TU PRÓXIMO VIAJE</p>
-    <p class="next-trip__empty">No tienes viajes próximos. ¡Crea uno!</p>
-  </div>
+      <div class="next-trip next-trip--empty" *ngIf="!nextTrip">
+        <p class="next-trip__label">TU PRÓXIMO VIAJE</p>
+        <p class="next-trip__empty">No tienes viajes próximos. ¡Crea uno!</p>
+      </div>
 
-  <div class="dashboard__trips">
-    <div class="dashboard__trips-header">
-      <h1 class="dashboard__section-title">
-        {{ showingArchived ? "Tus viajes archivados" : "Mis viajes" }}
-      </h1>
-      <button
-        class="dashboard__archived-btn"
-        (click)="openArchivedModal()"
-        *ngIf="archivedCount > 0 && !showingArchived"
-      >
-        Viajes archivados ({{ archivedCount }})
+      <div class="dashboard__trips">
+        <div class="dashboard__trips-header">
+          <h1 class="dashboard__section-title">
+            {{ showingArchived ? "Tus viajes archivados" : "Mis viajes" }}
+          </h1>
+          <button
+            class="dashboard__archived-btn"
+            (click)="openArchivedModal()"
+            *ngIf="archivedCount > 0 && !showingArchived"
+          >
+            Viajes archivados ({{ archivedCount }})
+          </button>
+          <button
+            class="dashboard__archived-btn dashboard__archived-btn--close"
+            (click)="showingArchived = false"
+            *ngIf="showingArchived"
+          >
+            <i class="bi bi-x-lg"></i> Cerrar archivados
+          </button>
+        </div>
+
+        <div class="dashboard__trips-list" *ngIf="!showingArchived">
+          <app-trip-card
+            *ngFor="let trip of travels"
+            [id]="trip.id!"
+            [icon]="trip.icon"
+            [name]="trip.name"
+            [startDate]="trip.startDate"
+            [endDate]="trip.endDate"
+            [members]="trip.membersCount"
+            (edit)="onEditTrip($event)"
+            (archive)="onArchiveTrip($event)"
+            (delete)="onDeleteTrip($event)"
+          />
+        </div>
+
+        <div class="dashboard__trips-list" *ngIf="showingArchived">
+          <app-archived-trip-card
+            *ngFor="let trip of archivedTravels"
+            [id]="trip.id!"
+            [icon]="trip.icon"
+            [name]="trip.name"
+            [startDate]="trip.startDate"
+            [endDate]="trip.endDate"
+            [members]="trip.membersCount"
+            (restore)="onRestoreTrip($event)"
+            (delete)="onDeleteTrip($event)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna derecha -->
+    <div class="quick-actions">
+      <h3 class="quick-actions__title">Acciones rápidas</h3>
+
+      <button class="quick-actions__btn" (click)="showModal = true">
+        <i class="bi bi-plus-circle"></i>
+        <span>Nuevo viaje</span>
       </button>
-      <button
-        class="dashboard__archived-btn dashboard__archived-btn--close"
-        (click)="showingArchived = false"
-        *ngIf="showingArchived"
-      >
-        <i class="bi bi-x-lg"></i> Cerrar archivados
+
+      <button class="quick-actions__btn" (click)="onAddExpense()">
+        <i class="bi bi-credit-card"></i>
+        <span>Añadir gasto</span>
       </button>
-    </div>
 
-    <!-- Lista normal -->
-    <div class="dashboard__trips-list" *ngIf="!showingArchived">
-      <app-trip-card
-        *ngFor="let trip of travels"
-        [id]="trip.id!"
-        [icon]="trip.icon"
-        [name]="trip.name"
-        [startDate]="trip.startDate"
-        [endDate]="trip.endDate"
-        [members]="trip.membersCount"
-        (edit)="onEditTrip($event)"
-        (archive)="onArchiveTrip($event)"
-        (delete)="onDeleteTrip($event)"
-      />
-    </div>
+      <button class="quick-actions__btn" (click)="onVote()">
+        <i class="bi bi-box2"></i>
+        <span>Votar actividad</span>
+        <span class="quick-actions__badge" *ngIf="pendingVotes > 0">{{
+          pendingVotes
+        }}</span>
+      </button>
 
-    <!-- Lista archivados -->
-    <div class="dashboard__trips-list" *ngIf="showingArchived">
-      <app-archived-trip-card
-        *ngFor="let trip of archivedTravels"
-        [id]="trip.id!"
-        [icon]="trip.icon"
-        [name]="trip.name"
-        [startDate]="trip.startDate"
-        [endDate]="trip.endDate"
-        [members]="trip.membersCount"
-        (restore)="onRestoreTrip($event)"
-        (delete)="onDeleteTrip($event)"
-      />
+      <button class="quick-actions__btn" (click)="onUploadPhotos()">
+        <i class="bi bi-camera"></i>
+        <span>Subir fotos</span>
+      </button>
     </div>
   </div>
 
