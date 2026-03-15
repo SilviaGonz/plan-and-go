@@ -16,6 +16,7 @@ export class FormInputComponent {
   @Input() control!: AbstractControl;
   @Input() errorMessage: string = '';
   @Input() min: string = '';
+  @Input() max: string = '';
 
   get formControl(): FormControl {
     return this.control as FormControl;
