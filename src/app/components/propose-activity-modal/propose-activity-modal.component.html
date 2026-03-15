@@ -1,0 +1,200 @@
+<div class="modal-overlay" (click)="close.emit()">
+  <div class="activity-modal" (click)="$event.stopPropagation()">
+    <div class="activity-modal__header">
+      <div class="activity-modal__header-text">
+        <span class="activity-modal__header-title"
+          >Proponer nueva actividad:</span
+        >
+        <span class="activity-modal__header-subtitle"
+          >Completa los detalles de la actividad que quieres proponer al
+          grupo</span
+        >
+      </div>
+      <button class="activity-modal__close" (click)="close.emit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="activity-modal__body">
+        <!-- Columna izquierda -->
+        <div class="activity-modal__col">
+          <h4 class="activity-modal__section-title">Información básica</h4>
+
+          <div class="activity-modal__field">
+            <label>Icono de la actividad *</label>
+            <app-icon-selector
+              [(selected)]="selectedIcon"
+              [icons]="activityIcons"
+            />
+          </div>
+
+          <app-form-input
+            label="Nombre de la actividad *"
+            placeholder="Ej: Ir a pasear al Parque del Retiro"
+            [control]="titleControl"
+            errorMessage="El nombre es obligatorio"
+          />
+
+          <app-form-textarea
+            label="Descripción detallada"
+            placeholder="Describe la actividad, qué incluye, qué veremos, por qué crees que el grupo la disfrutaría..."
+            [maxLength]="200"
+            [control]="descriptionControl"
+          />
+
+          <div class="activity-modal__row">
+            <div class="activity-modal__field">
+              <label>Nivel de actividad *</label>
+              <select [formControl]="$any(form.get('activityLevel'))">
+                <option value="bajo">Bajo - Relajado</option>
+                <option value="medio">Medio - Moderado</option>
+                <option value="alto">Alto - Intenso</option>
+              </select>
+            </div>
+
+            <app-form-input
+              label="Ubicación / Punto de encuentro *"
+              placeholder="Dirección, nombre del lugar..."
+              [control]="locationControl"
+              errorMessage="La ubicación es obligatoria"
+            />
+          </div>
+
+          <app-form-input
+            label="Enlaces adicionales (reseñas, página web de la actividad...)"
+            placeholder="https://..."
+            [control]="linkControl"
+            errorMessage=""
+          />
+        </div>
+
+        <!-- Columna derecha -->
+        <div class="activity-modal__col">
+          <h4 class="activity-modal__section-title">Detalles logísticos</h4>
+
+          <div class="activity-modal__row">
+            <app-form-input
+              label="Fecha sugerida *"
+              type="date"
+              [control]="suggestedDateControl"
+              errorMessage="La fecha es obligatoria"
+              [min]="minDate"
+              [max]="maxDate"
+            />
+            <app-form-input
+              label="Hora de inicio *"
+              type="time"
+              [control]="startTimeControl"
+              errorMessage="La hora es obligatoria"
+            />
+          </div>
+
+          <div class="activity-modal__field">
+            <label>Duración estimada *</label>
+            <select [formControl]="$any(form.get('duration'))">
+              <option value="1 hora">1 hora</option>
+              <option value="2 horas">2 horas</option>
+              <option value="3 horas">3 horas</option>
+              <option value="Medio día (4-6 horas)">
+                Medio día (4-6 horas)
+              </option>
+              <option value="Día completo (8 o más horas)">
+                Día completo (8 o más horas)
+              </option>
+              <option value="Actividad nocturna">Actividad nocturna</option>
+            </select>
+          </div>
+
+          <h4 class="activity-modal__section-title">Información económica</h4>
+
+          <div class="activity-modal__row activity-modal__row--align">
+            <div class="activity-modal__cost">
+              <label>Coste por persona *</label>
+              <div class="activity-modal__cost-input">
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  [formControl]="costPerPersonControl"
+                />
+                <span>€</span>
+              </div>
+            </div>
+            <label class="activity-modal__checkbox">
+              <input
+                type="checkbox"
+                [formControl]="$any(form.get('requiresReservation'))"
+              />
+              Requiere reserva previa
+            </label>
+          </div>
+
+          <h4 class="activity-modal__section-title">Notas adicionales</h4>
+
+          <app-form-textarea
+            placeholder="Requisitos especiales, qué llevar, recomendaciones..."
+            [maxLength]="200"
+            [control]="notesControl"
+          />
+        </div>
+      </div>
+
+      <!-- Imágenes -->
+      <div class="activity-modal__images">
+        <h4 class="activity-modal__section-title">Imágenes de la actividad</h4>
+        <div class="activity-modal__images-body">
+          <p>Sube fotos de referencia para mostrar cómo es la actividad</p>
+          <label class="activity-modal__upload" for="activityImageInput">
+            <i class="bi bi-camera-plus"></i>
+            <p>
+              {{
+                uploadingImage
+                  ? "Subiendo..."
+                  : "Arrastra una imagen aquí o haz clic para seleccionar"
+              }}
+            </p>
+            <span>PNG, JPG o PDF (máx. 5MB)</span>
+            <input
+              id="activityImageInput"
+              type="file"
+              accept="image/*"
+              multiple
+              hidden
+              (change)="onImageSelected($event)"
+            />
+          </label>
+        </div>
+        <div
+          class="activity-modal__images-preview"
+          *ngIf="imageUrls.length > 0"
+        >
+          <div class="activity-modal__image-item" *ngFor="let url of imageUrls">
+            <img [src]="url" alt="imagen actividad" />
+            <button type="button" (click)="removeImage(url)">
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="activity-modal__footer">
+        <p class="form__error" *ngIf="errorMessage">{{ errorMessage }}</p>
+        <button
+          type="button"
+          class="activity-modal__cancel"
+          (click)="close.emit()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          class="activity-modal__submit"
+          [disabled]="loading"
+        >
+          {{ loading ? "Creando..." : "Crear actividad" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
