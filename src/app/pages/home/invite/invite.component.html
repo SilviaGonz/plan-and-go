@@ -1,0 +1,48 @@
+<div class="invite">
+  <div class="invite__card">
+    <div class="invite__loading" *ngIf="loading">
+      <p>Cargando invitación...</p>
+    </div>
+
+    <div class="invite__error" *ngIf="!loading && error">
+      <i class="bi bi-x-circle"></i>
+      <h2>Ups</h2>
+      <p>{{ error }}</p>
+      <button (click)="goHome()">Ir al inicio</button>
+    </div>
+
+    <div class="invite__success" *ngIf="success">
+      <i class="bi bi-check-circle"></i>
+      <h2>¡Bienvenido al viaje!</h2>
+      <p>Redirigiendo al dashboard...</p>
+    </div>
+
+    <div
+      class="invite__content"
+      *ngIf="!loading && !error && !success && invitation"
+    >
+      <div class="invite__header">
+        <img
+          src="../../../../assets/icons/logo.png"
+          alt="Plan&Go"
+          class="invite__logo"
+        />
+      </div>
+
+      <h2>¡Te han invitado a un viaje!</h2>
+      <p>
+        <strong>{{ invitation.invitedByName }}</strong> te ha invitado a unirte
+        a:
+      </p>
+      <h1 class="invite__travel-name">{{ invitation.travelName }}</h1>
+
+      <button class="invite__btn" (click)="accept()" [disabled]="accepting">
+        {{ accepting ? "Aceptando..." : "Aceptar invitación" }}
+      </button>
+
+      <p class="invite__hint">
+        Si no tienes cuenta se te pedirá que te registres primero
+      </p>
+    </div>
+  </div>
+</div>

@@ -14,6 +14,8 @@ import { DeleteTravelModalComponent } from "../../../components/delete-travel-mo
 import { ToastNotificationComponent } from "../../../components/toast-notification/toast-notification.component";
 import { ArchiveTravelModalComponent } from "../../../components/archive-travel-modal/archive-travel-modal.component";
 import { ArchivedTripCardComponent } from "../../../components/archived-trip-card/archived-trip-card.component";
+import { Router } from '@angular/router';
+import { ActivityService } from '../../../services/activity.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,6 +29,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private uiService = inject(UiService);
   private subscription = new Subscription();
   private travelService = inject(TravelService);
+  private router = inject(Router);
+  private activityService = inject(ActivityService);
 
 
   firstName = '';
@@ -55,12 +59,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   );
 }
 
+pendingVotes = 0;
+
 async loadTravels() {
   try {
     this.travels = await this.travelService.getUserTravels();
     this.archivedTravels = await this.travelService.getArchivedTravels();
     this.archivedCount = this.archivedTravels.length;
     this.nextTrip = this.travelService.getNextTrip(this.travels);
+
+    const uid = this.auth.currentUser?.uid || '';
+    const travelIds = this.travels.map(t => t.id!);
+    this.pendingVotes = await this.activityService.getPendingVotesCount(uid, travelIds);
   } catch (error) {
     console.error('error cargando viajes:', error);
   }
@@ -186,5 +196,28 @@ async openArchivedModal() {
   this.showingArchived = true;
 }
 
+onAddExpense() {
+  if (this.nextTrip?.id) this.router.navigate(['/trips', this.nextTrip.id], { fragment: 'gastos' });
+}
+
+async onVote() {
+  const uid = this.auth.currentUser?.uid || '';
+  for (const travel of this.travels) {
+    const activities = await this.activityService.getActivities(travel.id!);
+    const pending = activities.find(a =>
+      a.votingStatus === 'open' &&
+      !a.votesUp.includes(uid) &&
+      !a.votesDown.includes(uid)
+    );
+    if (pending) {
+      this.router.navigate(['/trips', travel.id], { fragment: 'actividades' });
+      return;
+    }
+  }
+}
+
+onUploadPhotos() {
+  if (this.nextTrip?.id) this.router.navigate(['/trips', this.nextTrip.id], { fragment: 'actividades' });
+}
 
 }

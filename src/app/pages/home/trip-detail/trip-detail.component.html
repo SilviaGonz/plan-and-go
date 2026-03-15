@@ -1,0 +1,117 @@
+<app-header></app-header>
+
+<div class="trip-detail">
+  <nav class="trip-detail__tabs">
+    <button
+      class="trip-detail__tab"
+      [class.active]="activeTab === 'actividades'"
+      (click)="activeTab = 'actividades'"
+    >
+      Actividades
+    </button>
+    <button
+      class="trip-detail__tab"
+      [class.active]="activeTab === 'calendario'"
+      (click)="activeTab = 'calendario'"
+    >
+      Calendario
+    </button>
+    <button
+      class="trip-detail__tab"
+      [class.active]="activeTab === 'gastos'"
+      (click)="activeTab = 'gastos'"
+    >
+      Gastos
+    </button>
+    <button
+      class="trip-detail__tab"
+      [class.active]="activeTab === 'chat'"
+      (click)="activeTab = 'chat'"
+    >
+      Chat
+    </button>
+  </nav>
+
+  <div class="trip-detail__content" *ngIf="activeTab === 'actividades'">
+    <button class="trip-detail__propose-btn" (click)="showProposeModal = true">
+      Proponer actividad para <strong>{{ travel?.name }}</strong>
+    </button>
+
+    <div class="activity-group" *ngFor="let activity of activities">
+      <p class="activity-group__status">
+        {{ getVotingLabel(activity) }}
+        <span class="activity-group__urgent" *ngIf="isVotingUrgent(activity)"
+          >¡Vota ahora!</span
+        >
+      </p>
+      <div class="activity-card">
+        <div class="activity-card__left">
+          <div class="activity-card__icon">
+            <i [class]="'bi ' + activity.icon"></i>
+          </div>
+          <div class="activity-card__info">
+            <h4 class="activity-card__title">{{ activity.title }}</h4>
+            <p class="activity-card__desc" *ngIf="activity.description">
+              {{ activity.description }}
+            </p>
+            <p class="activity-card__author">
+              Propuesto por {{ activity.proposedByName }}
+            </p>
+          </div>
+        </div>
+        <div class="activity-card__votes">
+          <button
+            class="activity-card__vote-btn"
+            [class.active]="activity.votesUp.includes(currentUserId)"
+            [disabled]="activity.votingStatus === 'closed'"
+            (click)="vote(activity.id!, 'up')"
+          >
+            <i class="bi bi-hand-thumbs-up-fill"></i>
+            <span>{{ activity.votesUp.length }}</span>
+          </button>
+          <button
+            class="activity-card__vote-btn activity-card__vote-btn--down"
+            [class.active]="activity.votesDown.includes(currentUserId)"
+            [disabled]="activity.votingStatus === 'closed'"
+            (click)="vote(activity.id!, 'down')"
+          >
+            <i class="bi bi-hand-thumbs-down-fill"></i>
+            <span>{{ activity.votesDown.length }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <p class="trip-detail__empty" *ngIf="activities.length === 0">
+      No hay actividades propuestas aún. ¡Sé el primero!
+    </p>
+  </div>
+
+  <div class="trip-detail__content" *ngIf="activeTab === 'calendario'">
+    <p class="trip-detail__coming-soon">Sección de calendario — próximamente</p>
+  </div>
+
+  <div class="trip-detail__content" *ngIf="activeTab === 'gastos'">
+    <p class="trip-detail__coming-soon">Sección de gastos — próximamente</p>
+  </div>
+
+  <div class="trip-detail__content" *ngIf="activeTab === 'chat'">
+    <p class="trip-detail__coming-soon">Sección de chat — próximamente</p>
+  </div>
+</div>
+
+<app-propose-activity-modal
+  *ngIf="showProposeModal"
+  [travelId]="travel?.id || ''"
+  [travelName]="travel?.name || ''"
+  [minDate]="(travel?.startDate | date: 'yyyy-MM-dd') || ''"
+  [maxDate]="(travel?.endDate | date: 'yyyy-MM-dd') || ''"
+  (close)="showProposeModal = false"
+  (created)="onActivityCreated()"
+/>
+
+<app-propose-travel-modal
+  *ngIf="showNewTravelModal"
+  (close)="showNewTravelModal = false"
+  (created)="showNewTravelModal = false"
+/>
