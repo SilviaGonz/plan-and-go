@@ -10,9 +10,7 @@ import { CommonModule } from '@angular/common';
 })
 export class IconSelectorComponent {
   @Input() selected: string = '';
-  @Output() selectedChange = new EventEmitter<string>();
-
-  icons = [
+  @Input() icons: string[] = [
     'bi-brightness-high',
     'bi-bank',
     'bi-tree',
@@ -21,6 +19,7 @@ export class IconSelectorComponent {
     'bi-music-note-beamed',
     'bi-briefcase',
   ];
+  @Output() selectedChange = new EventEmitter<string>();
 
   select(icon: string) {
     this.selected = icon;
