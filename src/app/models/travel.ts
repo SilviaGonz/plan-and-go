@@ -15,4 +15,16 @@ export interface Travel {
   createdBy: string;
   createdAt: Date;
   archived?: boolean;
+  itinerary?: DayItinerary[];
+}
+
+export interface ActivityItem {
+  name: string;
+  time: string;
+}
+
+export interface DayItinerary {
+  date: Date;
+  label: string;
+  activities: ActivityItem[];
 }

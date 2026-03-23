@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, where, doc, getDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, where, doc, getDoc, updateDoc, deleteDoc, Timestamp } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
 import { Travel } from '../models/travel';
 import { InvitationService } from './invitation.service';
@@ -19,11 +19,16 @@ export class TravelService {
     console.log('members al crear:', travel.members);
 
     const travelsRef = collection(this.firestore, 'travels');
-    const docRef = await addDoc(travelsRef, {
+
+    const dataToSave = {
       ...travel,
+      itinerary: travel.itinerary?.length ? this.serializeItinerary(travel.itinerary) : [],
       createdBy: user.uid,
       createdAt: serverTimestamp()
-    });
+    };
+console.log('itinerary a guardar:', JSON.stringify(dataToSave.itinerary)); // 👈 aquí
+
+    const docRef = await addDoc(travelsRef, dataToSave);
 
     console.log('travelId creado:', docRef.id);
     console.log('enviando invitaciones a:', travel.members);
@@ -51,11 +56,15 @@ export class TravelService {
     ]);
 
     const mapDoc = (doc: any): Travel => ({
-      id: doc.id,
-      ...doc.data(),
-      startDate: doc.data()['startDate']?.toDate(),
-      endDate: doc.data()['endDate']?.toDate(),
-    });
+  id: doc.id,
+  ...doc.data(),
+  startDate: doc.data()['startDate']?.toDate(),
+  endDate: doc.data()['endDate']?.toDate(),
+  itinerary: (doc.data()['itinerary'] || []).map((day: any) => ({
+    ...day,
+    date: day.date?.toDate()
+  }))
+});
 
     const created = createdSnap.docs.map(mapDoc);
     const member = memberSnap.docs.map(mapDoc);
@@ -75,17 +84,25 @@ export class TravelService {
     const snapshot = await getDoc(docRef);
     if (!snapshot.exists()) return null;
     return {
-      id: snapshot.id,
-      ...snapshot.data(),
-      startDate: snapshot.data()['startDate']?.toDate(),
-      endDate: snapshot.data()['endDate']?.toDate(),
-    } as Travel;
+  id: snapshot.id,
+  ...snapshot.data(),
+  startDate: snapshot.data()['startDate']?.toDate(),
+  endDate: snapshot.data()['endDate']?.toDate(),
+  itinerary: (snapshot.data()['itinerary'] || []).map((day: any) => ({
+    ...day,
+    date: day.date?.toDate()
+  }))
+} as Travel;
   }
 
   async updateTravel(id: string, travel: Partial<Travel>) {
-    const docRef = doc(this.firestore, 'travels', id);
-    await updateDoc(docRef, { ...travel });
-  }
+  const docRef = doc(this.firestore, 'travels', id);
+  const dataToUpdate = {
+    ...travel,
+    ...(travel.itinerary ? { itinerary: this.serializeItinerary(travel.itinerary) } : {})
+  };
+  await updateDoc(docRef, dataToUpdate);
+}
 
   async deleteTravel(id: string) {
     const docRef = doc(this.firestore, 'travels', id);
@@ -116,4 +133,13 @@ export class TravelService {
     })) as Travel[];
     return all.filter(t => t.archived === true);
   }
+
+  private serializeItinerary(itinerary: any[]) {
+    return itinerary.map(day => ({
+      date: Timestamp.fromDate(new Date(day.date)),
+      label: day.label,
+      activities: day.activities
+    }));
+  }
+
 }
