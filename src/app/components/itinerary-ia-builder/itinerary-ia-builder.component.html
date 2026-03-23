@@ -1,0 +1,150 @@
+<!-- Formulario inicial -->
+<div class="ai-builder" *ngIf="!generating && !generated">
+  <div class="ai-builder__info">
+    <i class="bi bi-info-circle-fill ai-builder__info-icon"></i>
+    <p>
+      Añade las actividades que quieres hacer y la IA las organizará de forma
+      óptima
+    </p>
+  </div>
+
+  <div class="ai-builder__block">
+    <div class="ai-builder__block-header">
+      <span class="ai-builder__block-number">1</span>
+      <span class="ai-builder__block-title"
+        >Añade las actividades del viaje</span
+      >
+      <button type="button" class="ai-builder__add-btn" (click)="addActivity()">
+        Añadir otra actividad
+      </button>
+    </div>
+    <div class="ai-builder__activities">
+      <div
+        class="ai-builder__activity"
+        *ngFor="let act of activities; let i = index; trackBy: trackByIndex"
+      >
+        <input
+          type="text"
+          class="ai-builder__activity-input"
+          placeholder="Nombre de la actividad"
+          [value]="act"
+          (input)="updateActivity(i, $any($event.target).value)"
+        />
+        <button
+          type="button"
+          class="ai-builder__remove-btn"
+          (click)="removeActivity(i)"
+        >
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-builder__block">
+    <div class="ai-builder__block-header">
+      <span class="ai-builder__block-number">2</span>
+      <span class="ai-builder__block-title">Preferencias de optimización</span>
+    </div>
+    <div class="ai-builder__prefs">
+      <div class="ai-builder__pref">
+        <label class="ai-builder__pref-label">Prioridad de optimización</label>
+        <div class="ai-builder__select-wrapper">
+          <select
+            class="ai-builder__select"
+            [(ngModel)]="priority"
+            name="priority"
+          >
+            <option value="minimize-distance">Minimizar distancias</option>
+            <option value="minimize-time">Minimizar tiempo</option>
+          </select>
+          <i class="bi bi-chevron-down ai-builder__select-icon"></i>
+        </div>
+      </div>
+      <div class="ai-builder__pref">
+        <label class="ai-builder__pref-label">Ritmo del viaje</label>
+        <div class="ai-builder__select-wrapper">
+          <select class="ai-builder__select" [(ngModel)]="pace" name="pace">
+            <option value="relaxed">Relajado</option>
+            <option value="moderate">Moderado</option>
+            <option value="intense">Intenso</option>
+          </select>
+          <i class="bi bi-chevron-down ai-builder__select-icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button
+    type="button"
+    class="ai-builder__generate-btn"
+    (click)="generate()"
+    [disabled]="filledActivities.length === 0"
+  >
+    Generar itinerario optimizado
+  </button>
+</div>
+
+<!-- Pantalla de carga -->
+<div class="ai-builder__loading" *ngIf="generating">
+  <div class="ai-builder__loading-spinner">
+    <i class="bi bi-arrow-clockwise"></i>
+  </div>
+  <div class="ai-builder__loading-robot">
+    <i class="bi bi-robot"></i>
+    <h3>Generando tu itinerario optimizado...</h3>
+  </div>
+  <div class="ai-builder__loading-steps">
+    <div
+      class="ai-builder__loading-step"
+      *ngFor="let step of loadingSteps"
+      [class.done]="step.done"
+    >
+      <i [class]="step.done ? 'bi bi-check-lg' : 'bi bi-hourglass-split'"></i>
+      <span>{{ step.label }}</span>
+    </div>
+  </div>
+  <div class="ai-builder__loading-hint">
+    <i class="bi bi-lightbulb"></i>
+    <span
+      >Estamos optimizando {{ filledActivities.length }} actividades en
+      {{ dayCount }} días</span
+    >
+  </div>
+</div>
+
+<!-- Resultado -->
+<div *ngIf="generated && !generating">
+  <div class="ai-builder__success">
+    <i class="bi bi-check-circle-fill ai-builder__success-icon"></i>
+    <div>
+      <h4>¡Itinerario optimizado generado!</h4>
+      <p>Hemos organizado tus actividades para aprovechar al máximo el viaje</p>
+    </div>
+    <button type="button" class="ai-builder__reset-btn" (click)="resetToForm()">
+      <i class="bi bi-x"></i>
+    </button>
+  </div>
+
+  <div class="ai-builder__stats">
+    <div class="ai-builder__stat">
+      <span class="ai-builder__stat-value">{{ stats.distance }} km</span>
+      <span class="ai-builder__stat-label">Distancia total</span>
+    </div>
+    <div class="ai-builder__stat">
+      <span class="ai-builder__stat-value">{{ stats.timeSaved }}%</span>
+      <span class="ai-builder__stat-label">Tiempo ahorrado</span>
+    </div>
+    <div class="ai-builder__stat">
+      <span class="ai-builder__stat-value">{{ stats.activities }}</span>
+      <span class="ai-builder__stat-label">Actividades</span>
+    </div>
+  </div>
+
+  <app-itinerary-builder
+    [startDate]="startDate"
+    [endDate]="endDate"
+    [initialItinerary]="generatedItinerary"
+    (itineraryChange)="itineraryGenerated.emit($event)"
+  />
+</div>
