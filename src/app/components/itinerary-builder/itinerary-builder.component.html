@@ -1,0 +1,64 @@
+<div class="builder">
+  <div class="builder__info">
+    <i class="bi bi-info-circle-fill builder__info-icon"></i>
+    <p>Añade títulos y las actividades principales de cada día</p>
+  </div>
+
+  <div class="builder__days">
+    <div class="builder__day" *ngFor="let day of days; let i = index">
+      <div class="builder__day-header">
+        <span class="builder__day-number">{{ i + 1 }}</span>
+        <span class="builder__day-label">{{ day.label }}</span>
+        <button
+          type="button"
+          class="builder__add-btn"
+          (click)="addActivity(day)"
+        >
+          Añadir otra actividad
+        </button>
+        <button
+          type="button"
+          class="builder__remove-day"
+          (click)="removeDay(i)"
+          title="Eliminar día"
+        >
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+
+      <div class="builder__activities">
+        <div
+          class="builder__activity"
+          *ngFor="let activity of day.activities; let j = index"
+        >
+          <input
+            type="text"
+            class="builder__activity-name"
+            placeholder="Nombre de la actividad"
+            [(ngModel)]="activity.name"
+            [name]="'act_' + i + '_' + j"
+            (input)="onInput()"
+          />
+          <div class="builder__time-wrapper">
+            <input
+              type="time"
+              class="builder__activity-time"
+              [(ngModel)]="activity.time"
+              [name]="'time_' + i + '_' + j"
+              (change)="onInput()"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="builder__tip">
+    <i class="bi bi-lightbulb builder__tip-icon"></i>
+    <p>
+      <strong>Tip:</strong> No te preocupes por completar todo ahora. Podrás
+      editar, reorganizar y añadir más actividades al itinerario una vez creado
+      el viaje.
+    </p>
+  </div>
+</div>
