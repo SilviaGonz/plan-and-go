@@ -72,7 +72,16 @@
 
           <div class="modal__section">
             <h4 class="modal__section-title">Itinerario del viaje</h4>
-            <div class="modal__itinerary-options">
+
+            <!-- Opciones -->
+            <div
+              class="modal__itinerary-options"
+              *ngIf="
+                selectedItinerary !== 'manual' &&
+                selectedItinerary !== 'later' &&
+                selectedItinerary !== 'ai'
+              "
+            >
               <app-itinerary-option-card
                 icon="bi-list-task"
                 title="Crear itinerario manualmente"
@@ -97,6 +106,59 @@
                 [selected]="selectedItinerary === 'later'"
                 (select)="selectedItinerary = $event"
               />
+            </div>
+
+            <!-- Builder manual -->
+            <div *ngIf="selectedItinerary === 'manual'">
+              <div class="modal__itinerary-back">
+                <button
+                  type="button"
+                  class="modal__itinerary-back-btn"
+                  (click)="selectedItinerary = ''"
+                >
+                  <i class="bi bi-arrow-left"></i> Cambiar opción
+                </button>
+              </div>
+              <app-itinerary-builder
+                [startDate]="startDateControl.value"
+                [endDate]="endDateControl.value"
+                [initialItinerary]="manualItinerary"
+                (itineraryChange)="manualItinerary = $event"
+              />
+            </div>
+
+            <!-- Builder IA -->
+            <div *ngIf="selectedItinerary === 'ai'">
+              <div class="modal__itinerary-back">
+                <button
+                  type="button"
+                  class="modal__itinerary-back-btn"
+                  (click)="selectedItinerary = ''"
+                >
+                  <i class="bi bi-arrow-left"></i> Cambiar opción
+                </button>
+              </div>
+              <app-itinerary-ia-builder
+                [startDate]="startDateControl.value"
+                [endDate]="endDateControl.value"
+                (itineraryGenerated)="
+                  aiItinerary = $event; manualItinerary = $event
+                "
+              />
+            </div>
+
+            <!-- Configurar después -->
+            <div
+              *ngIf="selectedItinerary === 'later'"
+              class="modal__itinerary-back"
+            >
+              <button
+                type="button"
+                class="modal__itinerary-back-btn"
+                (click)="selectedItinerary = ''"
+              >
+                <i class="bi bi-arrow-left"></i> Cambiar opción
+              </button>
             </div>
           </div>
         </div>
