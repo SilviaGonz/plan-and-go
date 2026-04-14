@@ -1,0 +1,42 @@
+<div class="chat">
+  <div class="chat__messages" #messagesContainer>
+    <div
+      *ngFor="let msg of filteredMessages"
+      class="chat__message-wrapper"
+      [class.chat__message-wrapper--own]="msg.userId === currentUserId"
+    >
+      <div
+        class="chat__message"
+        [class.chat__message--own]="msg.userId === currentUserId"
+        [class.chat__message--other]="msg.userId !== currentUserId"
+      >
+        <span class="chat__message-author" *ngIf="msg.userId !== currentUserId">
+          {{ msg.userName }}
+        </span>
+        <p class="chat__message-text">{{ msg.text }}</p>
+        <span class="chat__message-time">{{ formatDate(msg.createdAt) }}</span>
+      </div>
+    </div>
+
+    <p class="chat__empty" *ngIf="filteredMessages.length === 0">
+      {{
+        searchQuery
+          ? "No se encontraron mensajes"
+          : "No hay mensajes aún. ¡Empieza la conversación!"
+      }}
+    </p>
+  </div>
+
+  <div class="chat__input">
+    <input
+      type="text"
+      class="chat__input-field"
+      placeholder="Escribe un mensaje..."
+      [(ngModel)]="newMessage"
+      (keydown)="onKeydown($event)"
+    />
+    <button type="button" class="chat__send-btn" (click)="send()">
+      Enviar
+    </button>
+  </div>
+</div>
