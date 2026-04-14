@@ -1,0 +1,157 @@
+<div class="modal-overlay" (click)="close.emit()">
+  <div class="activity-modal" (click)="$event.stopPropagation()">
+    <div class="activity-modal__header">
+      <div class="activity-modal__header-text">
+        <span class="activity-modal__header-title">Añadir nuevo gasto:</span>
+        <span class="activity-modal__header-subtitle"
+          >Completa los detalles del pago</span
+        >
+      </div>
+      <button class="activity-modal__close" (click)="close.emit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="activity-modal__body">
+        <!-- Columna izquierda -->
+        <div class="activity-modal__col">
+          <h4 class="activity-modal__section-title">Información básica</h4>
+
+          <div class="activity-modal__field">
+            <label>Icono del gasto *</label>
+            <app-icon-selector
+              [(selected)]="selectedIcon"
+              [icons]="expenseIcons"
+            />
+          </div>
+
+          <app-form-input
+            label="Nombre del gasto *"
+            placeholder="Ej. Alquiler del coche"
+            [control]="nameControl"
+            errorMessage="El nombre es obligatorio"
+          />
+
+          <app-form-textarea
+            label="Descripción detallada"
+            placeholder="Añade cualquier información relevante del gasto"
+            [maxLength]="200"
+            [control]="descriptionControl"
+          />
+
+          <div class="activity-modal__row">
+            <div class="activity-modal__cost">
+              <label>Importe total *</label>
+              <div class="activity-modal__cost-input">
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  [formControl]="amountControl"
+                />
+                <span>€</span>
+              </div>
+            </div>
+
+            <app-form-input
+              label="Fecha del pago *"
+              type="date"
+              [control]="dateControl"
+              errorMessage="La fecha es obligatoria"
+              [max]="today"
+            />
+          </div>
+        </div>
+
+        <!-- Columna derecha -->
+        <div class="activity-modal__col">
+          <h4 class="activity-modal__section-title">División del gasto</h4>
+
+          <div class="activity-modal__field">
+            <label>¿Quién pagó? *</label>
+            <select
+              [formControl]="paidByControl"
+              class="activity-modal__select"
+            >
+              <option
+                *ngFor="let member of acceptedMembers"
+                [value]="member.email"
+              >
+                {{ member.email
+                }}{{ member.email === auth.currentUser?.email ? " (Tú)" : "" }}
+              </option>
+            </select>
+          </div>
+
+          <div
+            class="expense-modal__per-person"
+            *ngIf="amountControl.value > 0"
+          >
+            <i class="bi bi-people-fill"></i>
+            <span
+              >{{ amountPerPerson | number: "1.2-2" }}€ por persona ({{
+                travel?.membersCount
+              }}
+              personas)</span
+            >
+          </div>
+
+          <h4 class="activity-modal__section-title">
+            Adjunta el ticket o captura *
+          </h4>
+
+          <label class="activity-modal__upload" for="receiptInput">
+            <i class="bi bi-camera-plus"></i>
+            <p>
+              {{
+                uploadingReceipt
+                  ? "Subiendo..."
+                  : "Arrastra una imagen aquí o haz clic para seleccionar"
+              }}
+            </p>
+            <span>JPG, PNG o PDF (máx. 5MB)</span>
+            <input
+              id="receiptInput"
+              type="file"
+              accept="image/*,.pdf"
+              hidden
+              (change)="onReceiptSelected($event)"
+            />
+          </label>
+          <span class="form__error" *ngIf="!receiptUrl && errorMessage">
+            Debes adjuntar el ticket o captura
+          </span>
+
+          <div class="expense-modal__receipt-preview" *ngIf="receiptUrl">
+            <img [src]="receiptUrl" alt="ticket" />
+            <button type="button" (click)="receiptUrl = ''">
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="activity-modal__footer">
+        <p class="form__error" *ngIf="errorMessage && receiptUrl">
+          {{ errorMessage }}
+        </p>
+        <button
+          type="button"
+          class="activity-modal__cancel"
+          (click)="close.emit()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          class="activity-modal__submit"
+          [disabled]="loading"
+        >
+          {{ loading ? "Registrando..." : "Registrar gasto" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
