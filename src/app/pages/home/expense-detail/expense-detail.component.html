@@ -1,0 +1,275 @@
+<app-header></app-header>
+
+<div class="expense-detail" *ngIf="!loading && expense">
+  <!-- Info principal -->
+  <div class="expense-detail__header">
+    <div class="expense-detail__header-left">
+      <div class="expense-detail__icon">
+        <i [class]="'bi ' + expense.icon"></i>
+      </div>
+      <div>
+        <h2 class="expense-detail__name">{{ expense.name }}</h2>
+        <p class="expense-detail__meta">
+          Pagado por {{ expense.paidByName }} ·
+          {{ expense.date | date: "d 'de' MMMM 'de' yyyy" }}
+        </p>
+      </div>
+    </div>
+    <div class="expense-detail__amounts">
+      <span class="expense-detail__total"
+        >{{ expense.amount | number: "1.2-2" }}€</span
+      >
+      <span class="expense-detail__per-person"
+        >{{ expense.amountPerPerson | number: "1.2-2" }}€/pp</span
+      >
+    </div>
+  </div>
+
+  <div class="expense-detail__body">
+    <!-- Columna izquierda -->
+    <div class="expense-detail__left">
+      <h4 class="expense-detail__section-title">Justificante del pago</h4>
+
+      <div
+        class="expense-detail__receipt"
+        (click)="showFullImage = true"
+        *ngIf="expense.receiptUrl"
+      >
+        <img [src]="expense.receiptUrl" alt="justificante" />
+        <div class="expense-detail__receipt-overlay">
+          <i class="bi bi-zoom-in"></i>
+        </div>
+      </div>
+
+      <h4 class="expense-detail__section-title">
+        División de gastos ({{ travel?.membersCount }} personas)
+      </h4>
+
+      <div class="expense-detail__members">
+        <div class="expense-detail__member" *ngFor="let member of members">
+          <div
+            class="expense-detail__member-avatar"
+            [style.background]="getInitialColor(member.email)"
+          >
+            {{ getInitial(member.email) }}
+          </div>
+          <div class="expense-detail__member-info">
+            <span class="expense-detail__member-email">{{ member.email }}</span>
+            <span
+              class="expense-detail__member-badge"
+              [class.expense-detail__member-badge--paid]="
+                member.status === 'Pagó el total'
+              "
+              [class.expense-detail__member-badge--green]="
+                member.status === 'Pagado'
+              "
+              [class.expense-detail__member-badge--pending]="
+                member.status === 'Pendiente'
+              "
+            >
+              {{ member.status }}
+            </span>
+          </div>
+          <span class="expense-detail__member-amount"
+            >{{ member.amount | number: "1.2-2" }}€</span
+          >
+        </div>
+      </div>
+
+      <button
+        class="expense-detail__mark-btn"
+        (click)="openPayModal()"
+        [disabled]="
+          currentUserStatus === 'Pagó el total' ||
+          currentUserStatus === 'Pagado'
+        "
+      >
+        {{
+          currentUserStatus === "Pagó el total" ||
+          currentUserStatus === "Pagado"
+            ? "Ya has pagado"
+            : "Marcar como pagado"
+        }}
+      </button>
+    </div>
+
+    <!-- Columna derecha -->
+    <div class="expense-detail__right">
+      <div class="expense-detail__summary">
+        <h4 class="expense-detail__section-title">Resumen del gasto</h4>
+        <div class="expense-detail__summary-row">
+          <span>Total del gasto:</span>
+          <strong>{{ expense.amount | number: "1.2-2" }}€</strong>
+        </div>
+        <div class="expense-detail__summary-row">
+          <span>Participantes:</span>
+          <strong class="expense-detail__summary-highlight"
+            >{{ travel?.membersCount }} personas</strong
+          >
+        </div>
+        <div class="expense-detail__summary-row">
+          <span>Tu parte:</span>
+          <strong class="expense-detail__summary-highlight"
+            >{{ expense.amountPerPerson | number: "1.2-2" }}€</strong
+          >
+        </div>
+        <div class="expense-detail__summary-row">
+          <span>Estado:</span>
+          <strong
+            [class.expense-detail__summary-pending]="
+              currentUserStatus === 'Pendiente de pago'
+            "
+            [class.expense-detail__summary-paid]="
+              currentUserStatus === 'Pagó el total' ||
+              currentUserStatus === 'Pagado'
+            "
+          >
+            {{ currentUserStatus }}
+          </strong>
+        </div>
+      </div>
+
+      <div class="expense-detail__info">
+        <div class="expense-detail__info-header">
+          <i class="bi bi-lightbulb"></i>
+          <span>Información</span>
+        </div>
+        <p>
+          Para marcar este gasto como pagado, deberás adjuntar un comprobante
+          del pago realizado a {{ expense.paidByName }} (Bizum, transferencia,
+          etc.). Esto ayuda a mantener la transparencia del grupo.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal imagen completa -->
+<div
+  class="expense-detail__image-modal"
+  *ngIf="showFullImage"
+  (click)="showFullImage = false"
+>
+  <div
+    class="expense-detail__image-modal-content"
+    (click)="$event.stopPropagation()"
+  >
+    <button
+      class="expense-detail__image-modal-close"
+      (click)="showFullImage = false"
+    >
+      <i class="bi bi-x-lg"></i>
+    </button>
+    <img [src]="expense!.receiptUrl" alt="justificante" />
+    <button class="expense-detail__download-btn" (click)="downloadReceipt()">
+      <i class="bi bi-download"></i> Descargar
+    </button>
+  </div>
+</div>
+
+<!-- Modal marcar como pagado -->
+<div
+  class="pay-modal-overlay"
+  *ngIf="showPayModal"
+  (click)="showPayModal = false"
+>
+  <div class="pay-modal" (click)="$event.stopPropagation()">
+    <div class="pay-modal__header">
+      <h3 class="pay-modal__title">Confirmar pago</h3>
+      <button class="pay-modal__close" (click)="showPayModal = false">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="pay-modal__body">
+      <div
+        class="pay-modal__alert"
+        [class.pay-modal__alert--success]="proofUploaded"
+      >
+        <i
+          [class]="
+            proofUploaded
+              ? 'bi bi-check-circle-fill'
+              : 'bi bi-exclamation-triangle-fill'
+          "
+        ></i>
+        <div>
+          <strong>{{
+            proofUploaded ? "Comprobante adjuntado correctamente" : "IMPORTANTE"
+          }}</strong>
+          <p>
+            {{
+              proofUploaded
+                ? "Revisa que la información sea correcta antes de continuar"
+                : "Para marcar este gasto como pagado, deberás adjuntar un comprobante del pago realizado a " +
+                  expense?.paidByName +
+                  " (Bizum, transferencia, etc.). Esto ayuda a mantener la transparencia del grupo."
+            }}
+          </p>
+        </div>
+      </div>
+
+      <h4 class="pay-modal__section-title">
+        {{ proofUploaded ? "Comprobante adjuntado" : "Adjuntar comprobante" }}
+      </h4>
+
+      <label
+        class="pay-modal__upload"
+        [class.pay-modal__upload--done]="proofUploaded"
+        for="proofInput"
+      >
+        <div *ngIf="!proofUploaded">
+          <i class="bi bi-camera-plus"></i>
+          <p>
+            {{
+              uploadingProof
+                ? "Subiendo..."
+                : "Arrastra una imagen aquí o haz clic para seleccionar"
+            }}
+          </p>
+          <span>JPG, PNG o PDF (máx. 5MB)</span>
+        </div>
+        <img
+          *ngIf="proofUploaded"
+          [src]="proofUrl"
+          alt="comprobante"
+          class="pay-modal__proof-preview"
+        />
+        <input
+          id="proofInput"
+          type="file"
+          accept="image/*,.pdf"
+          hidden
+          (change)="onProofSelected($event)"
+        />
+      </label>
+
+      <h4 class="pay-modal__section-title">
+        {{ proofUploaded ? "Cantidad pagada" : "Cantidad a pagar" }}
+      </h4>
+
+      <div
+        class="pay-modal__amount"
+        [class.pay-modal__amount--done]="proofUploaded"
+      >
+        <p class="pay-modal__amount-label">Pagas a {{ expense?.paidByName }}</p>
+        <span class="pay-modal__amount-value"
+          >{{ expense?.amountPerPerson | number: "1.2-2" }}€</span
+        >
+      </div>
+    </div>
+
+    <div class="pay-modal__footer">
+      <button class="pay-modal__cancel" (click)="showPayModal = false">
+        Cancelar
+      </button>
+      <button
+        class="pay-modal__confirm"
+        [disabled]="!proofUploaded || confirmingPayment"
+        (click)="confirmPayment()"
+      >
+        {{ confirmingPayment ? "Confirmando..." : "Confirmar pago" }}
+      </button>
+    </div>
+  </div>
+</div>
