@@ -1,0 +1,75 @@
+<div class="calendar">
+  <!-- Cabecera del mes -->
+  <div class="calendar__header">
+    <button type="button" class="calendar__nav" (click)="prevMonth()">
+      <i class="bi bi-chevron-left"></i>
+    </button>
+    <h3 class="calendar__month">{{ monthLabel }}</h3>
+    <button type="button" class="calendar__nav" (click)="nextMonth()">
+      <i class="bi bi-chevron-right"></i>
+    </button>
+  </div>
+
+  <!-- Días de la semana -->
+  <div class="calendar__weekdays">
+    <span *ngFor="let day of weekDays">{{ day }}</span>
+  </div>
+
+  <!-- Semanas -->
+  <div class="calendar__weeks">
+    <div class="calendar__week" *ngFor="let week of weeks">
+      <button
+        *ngFor="let day of week"
+        type="button"
+        class="calendar__day"
+        [class.calendar__day--other-month]="!day.isCurrentMonth"
+        [class.calendar__day--trip]="day.isTripDay"
+        [class.calendar__day--today]="day.isToday"
+        [class.calendar__day--selected]="
+          selectedDay?.date?.toDateString() === day.date.toDateString()
+        "
+        (click)="selectDay(day)"
+      >
+        {{ day.dayNumber }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Itinerario del día seleccionado -->
+  <div class="calendar__itinerary" *ngIf="selectedDay">
+    <h4 class="calendar__itinerary-title">
+      Itinerario del día:
+      <span>{{ selectedDay.date | date: "d 'de' MMMM" }}</span>
+    </h4>
+
+    <div
+      *ngIf="
+        selectedDay.itinerary && selectedDay.itinerary.activities.length > 0
+      "
+    >
+      <div
+        class="calendar__itinerary-item"
+        *ngFor="let activity of selectedDay.itinerary.activities"
+      >
+        <span
+          class="calendar__itinerary-time"
+          *ngIf="activity.time !== '00:00'"
+        >
+          {{ activity.time }}
+        </span>
+        <span class="calendar__itinerary-name">{{
+          activity.name || "Actividad sin nombre"
+        }}</span>
+      </div>
+    </div>
+
+    <p
+      class="calendar__itinerary-empty"
+      *ngIf="
+        !selectedDay.itinerary || selectedDay.itinerary.activities.length === 0
+      "
+    >
+      No hay actividades planificadas para este día.
+    </p>
+  </div>
+</div>
