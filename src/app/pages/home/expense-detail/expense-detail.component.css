@@ -1,0 +1,550 @@
+.expense-detail {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  margin-top: 4rem;
+}
+
+.expense-detail__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1.5px solid #e8e0d8;
+}
+
+.expense-detail__header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.expense-detail__icon {
+  background: var(--color-primary, #be681c);
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.expense-detail__name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary, #be681c);
+  margin: 0 0 0.2rem;
+}
+
+.expense-detail__meta {
+  font-size: 0.8rem;
+  color: var(--color-text-subtle, #737272);
+  margin: 0;
+}
+
+.expense-detail__amounts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.expense-detail__total {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text, #333);
+}
+
+.expense-detail__per-person {
+  font-size: 0.85rem;
+  color: var(--color-text-subtle, #737272);
+}
+
+.expense-detail__body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.expense-detail__section-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 0.75rem;
+}
+
+.expense-detail__left {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.expense-detail__receipt {
+  position: relative;
+  width: 100%;
+  max-width: 220px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1.5px solid #e8e0d8;
+}
+
+.expense-detail__receipt img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.expense-detail__receipt-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.expense-detail__receipt:hover .expense-detail__receipt-overlay {
+  opacity: 1;
+}
+
+.expense-detail__members {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.expense-detail__member {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #fafafa;
+  border: 1px solid #e8e0d8;
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+}
+
+.expense-detail__member-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.expense-detail__member-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.expense-detail__member-email {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text, #333);
+}
+
+.expense-detail__member-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.expense-detail__member-badge--paid {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.expense-detail__member-badge--pending {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.expense-detail__member-amount {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text, #333);
+  flex-shrink: 0;
+}
+
+.expense-detail__mark-btn {
+  background: var(--color-primary, #be681c);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.85rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.expense-detail__mark-btn:hover {
+  background: var(--color-primary-dark, #9a5214);
+}
+
+.expense-detail__right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.expense-detail__summary {
+  border: 1.5px solid #e8e0d8;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.expense-detail__summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--color-text, #333);
+}
+
+.expense-detail__summary-highlight {
+  color: var(--color-primary, #be681c);
+}
+
+.expense-detail__summary-pending {
+  color: #dc2626;
+}
+
+.expense-detail__info {
+  background: var(--color-background, #f9f0e8);
+  border: 1.5px solid var(--color-primary-light, #ebd0b9);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.expense-detail__info-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: var(--color-primary, #be681c);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.expense-detail__info p {
+  font-size: 0.82rem;
+  color: var(--color-text, #333);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Modal imagen completa */
+.expense-detail__image-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.expense-detail__image-modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.expense-detail__image-modal-content img {
+  max-width: 100%;
+  max-height: 75vh;
+  border-radius: 10px;
+  object-fit: contain;
+}
+
+.expense-detail__image-modal-close {
+  position: absolute;
+  top: -2rem;
+  right: 0;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.expense-detail__download-btn {
+  background: var(--color-primary, #be681c);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.2s;
+}
+
+.expense-detail__download-btn:hover {
+  background: var(--color-primary-dark, #9a5214);
+}
+
+.expense-detail__summary-paid {
+  color: #16a34a;
+}
+
+/* Modal marcar como pagado */
+.pay-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.pay-modal {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 460px;
+  overflow: hidden;
+}
+
+.pay-modal__header {
+  background: var(--color-primary, #be681c);
+  color: #fff;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pay-modal__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.pay-modal__close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.pay-modal__body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pay-modal__alert {
+  background: #fef9f0;
+  border: 1.5px solid var(--color-primary-light, #ebd0b9);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.pay-modal__alert i {
+  color: var(--color-primary, #be681c);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.pay-modal__alert--success {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.pay-modal__alert--success i {
+  color: #16a34a;
+}
+
+.pay-modal__alert strong {
+  font-size: 0.85rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.pay-modal__alert p {
+  font-size: 0.8rem;
+  margin: 0;
+  color: var(--color-text, #333);
+  line-height: 1.4;
+}
+
+.pay-modal__section-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-primary, #be681c);
+  margin: 0;
+}
+
+.pay-modal__upload {
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.2s;
+  background: #fafafa;
+  min-height: 120px;
+}
+
+.pay-modal__upload:hover {
+  border-color: var(--color-primary, #be681c);
+}
+
+.pay-modal__upload--done {
+  border-color: var(--color-primary, #be681c);
+  border-style: dashed;
+}
+
+.pay-modal__upload i {
+  font-size: 2rem;
+  color: var(--color-text-subtle, #888);
+}
+
+.pay-modal__upload p {
+  font-size: 0.85rem;
+  color: var(--color-text-subtle, #888);
+  margin: 0;
+}
+
+.pay-modal__upload span {
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+.pay-modal__proof-preview {
+  width: 100%;
+  max-height: 150px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.pay-modal__amount {
+  border: 1.5px solid #e8e0d8;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.pay-modal__amount--done {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.pay-modal__amount--done .pay-modal__amount-value {
+  color: #16a34a;
+}
+
+.pay-modal__amount-label {
+  font-size: 0.85rem;
+  color: var(--color-text-subtle, #737272);
+  margin: 0 0 0.5rem;
+}
+
+.pay-modal__amount-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary, #be681c);
+}
+
+.pay-modal__footer {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid #eee;
+}
+
+.pay-modal__cancel {
+  flex: 1;
+  background: #e0e0e0;
+  color: var(--color-text, #333);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pay-modal__cancel:hover {
+  background: #ccc;
+}
+
+.pay-modal__confirm {
+  flex: 1;
+  background: var(--color-primary, #be681c);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.expense-detail__member-badge--green {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.expense-detail__mark-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.pay-modal__confirm:hover:not(:disabled) {
+  background: var(--color-primary-dark, #9a5214);
+}
+
+.pay-modal__confirm:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -52,9 +52,12 @@ export class InvitationService {
     return { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as Invitation;
   }
 
-  async acceptInvitation(invitationId: string, travelId: string) {
+async acceptInvitation(invitationId: string, travelId: string) {
   const user = this.auth.currentUser;
   if (!user) return;
+
+  console.log('user email:', user.email);
+  console.log('user uid:', user.uid);
 
   await updateDoc(doc(this.firestore, 'invitations', invitationId), {
     status: 'accepted'
@@ -64,10 +67,14 @@ export class InvitationService {
   const travelSnap = await getDoc(travelRef);
   const travelData = travelSnap.data();
 
+  console.log('members actuales:', JSON.stringify(travelData?.['members']));
+
   const members = travelData?.['members'] || [];
   const updatedMembers = members.map((m: any) =>
     m.email === user.email ? { ...m, status: 'accepted', uid: user.uid } : m
   );
+
+  console.log('members actualizados:', JSON.stringify(updatedMembers));
 
   const memberUids = travelData?.['memberUids'] || [];
   if (!memberUids.includes(user.uid)) memberUids.push(user.uid);

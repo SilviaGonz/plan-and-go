@@ -189,3 +189,22 @@
 .activity-card__vote-btn:disabled {
   cursor: not-allowed;
 }
+
+.trip-detail__tab {
+  position: relative;
+}
+
+.trip-detail__badge {
+  background: var(--color-primary, #be681c);
+  color: #fff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}

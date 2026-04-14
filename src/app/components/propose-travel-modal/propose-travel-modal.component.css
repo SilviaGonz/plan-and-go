@@ -278,3 +278,24 @@
   margin-bottom: 0.50rem;
   display: block;
 }
+
+.modal__itinerary-back {
+  margin-bottom: 0.75rem;
+}
+
+.modal__itinerary-back-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+}
+
+.modal__itinerary-back-btn:hover {
+  text-decoration: underline;
+}

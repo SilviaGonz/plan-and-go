@@ -5,30 +5,35 @@
     <button
       class="trip-detail__tab"
       [class.active]="activeTab === 'actividades'"
-      (click)="activeTab = 'actividades'"
+      (click)="activeTab = 'actividades'; uiService.setActiveTab('actividades')"
     >
       Actividades
     </button>
     <button
       class="trip-detail__tab"
       [class.active]="activeTab === 'calendario'"
-      (click)="activeTab = 'calendario'"
+      (click)="activeTab = 'calendario'; uiService.setActiveTab('calendario')"
     >
       Calendario
     </button>
     <button
       class="trip-detail__tab"
       [class.active]="activeTab === 'gastos'"
-      (click)="activeTab = 'gastos'"
+      (click)="activeTab = 'gastos'; uiService.setActiveTab('gastos')"
     >
       Gastos
     </button>
     <button
       class="trip-detail__tab"
       [class.active]="activeTab === 'chat'"
-      (click)="activeTab = 'chat'"
+      (click)="
+        onChatTabSelected(travel?.id || ''); uiService.setActiveTab('chat')
+      "
     >
       Chat
+      <span class="trip-detail__badge" *ngIf="unreadMessages > 0">
+        {{ unreadMessages }}
+      </span>
     </button>
   </nav>
 
@@ -37,7 +42,7 @@
       Proponer actividad para <strong>{{ travel?.name }}</strong>
     </button>
 
-    <div class="activity-group" *ngFor="let activity of activities">
+    <div class="activity-group" *ngFor="let activity of filteredActivities">
       <p class="activity-group__status">
         {{ getVotingLabel(activity) }}
         <span class="activity-group__urgent" *ngIf="isVotingUrgent(activity)"
@@ -82,21 +87,25 @@
       </div>
     </div>
 
-    <p class="trip-detail__empty" *ngIf="activities.length === 0">
-      No hay actividades propuestas aún. ¡Sé el primero!
+    <p class="trip-detail__empty" *ngIf="filteredActivities.length === 0">
+      {{
+        searchQuery
+          ? "No se encontraron actividades"
+          : "No hay actividades propuestas aún. ¡Sé el primero!"
+      }}
     </p>
   </div>
 
   <div class="trip-detail__content" *ngIf="activeTab === 'calendario'">
-    <p class="trip-detail__coming-soon">Sección de calendario — próximamente</p>
+    <app-trip-calendar [travel]="travel" />
   </div>
 
   <div class="trip-detail__content" *ngIf="activeTab === 'gastos'">
-    <p class="trip-detail__coming-soon">Sección de gastos — próximamente</p>
+    <app-trip-expenses [travel]="travel" />
   </div>
 
   <div class="trip-detail__content" *ngIf="activeTab === 'chat'">
-    <p class="trip-detail__coming-soon">Sección de chat — próximamente</p>
+    <app-trip-chat [travelId]="travel?.id || ''" />
   </div>
 </div>
 

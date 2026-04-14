@@ -16,6 +16,7 @@ export class TripCardComponent {
   @Input() startDate: Date = new Date();
   @Input() endDate: Date = new Date();
   @Input() members: number = 0;
+  @Input() totalExpenses: number = 0;
 
   showMenu = false;
 

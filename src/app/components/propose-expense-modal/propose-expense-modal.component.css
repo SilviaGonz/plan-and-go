@@ -1,0 +1,79 @@
+@import '../propose-activity-modal/propose-activity-modal.component.css';
+
+.expense-modal__who-paid {
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  background: #fff;
+  color: var(--color-text);
+}
+
+.expense-modal__per-person {
+  background: var(--color-primary-light, #fdf0e0);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.expense-modal__receipt-preview {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.expense-modal__receipt-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.expense-modal__receipt-preview button {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+
+.form__error {
+  font-size: 0.78rem;
+  color: red;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.activity-modal__select {
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: white;
+  cursor: pointer;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+
+.activity-modal__select:focus {
+  border-color: var(--color-primary, #be681c);
+}

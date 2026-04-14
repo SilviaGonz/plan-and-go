@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, inject, Input } from '@angular/core';
+import { Component, Output, EventEmitter, inject, Input, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormInputComponent } from '../form-input/form-input.component';
@@ -8,7 +8,9 @@ import { ItineraryOptionCardComponent } from '../itinerary-option-card/itinerary
 import { MemberTagComponent } from '../member-tag/member-tag.component';
 import { TravelService } from '../../services/travel.service';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
-import { Travel } from '../../models/travel';
+import { Travel, DayItinerary } from '../../models/travel';
+import { ItineraryBuilderComponent } from '../itinerary-builder/itinerary-builder.component';
+import { ItineraryIaBuilderComponent } from '../itinerary-ia-builder/itinerary-ia-builder.component';
 
 @Component({
   selector: 'app-propose-travel-modal',
@@ -21,8 +23,10 @@ import { Travel } from '../../models/travel';
     FormTextareaComponent,
     IconSelectorComponent,
     ItineraryOptionCardComponent,
-    MemberTagComponent
-  ],
+    MemberTagComponent,
+    ItineraryBuilderComponent,
+    ItineraryIaBuilderComponent,
+],
   templateUrl: './propose-travel-modal.component.html',
   styleUrl: './propose-travel-modal.component.css'
 })
@@ -33,6 +37,7 @@ export class ProposeTravelModalComponent {
   private fb = inject(FormBuilder);
   private travelService = inject(TravelService);
   private storage = inject(Storage);
+  private cdr = inject(ChangeDetectorRef);
 
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
@@ -52,6 +57,8 @@ export class ProposeTravelModalComponent {
   today = new Date().toISOString().split('T')[0];
   imageUrls: string[] = [];
   uploadingImage = false;
+  manualItinerary: DayItinerary[] = [];
+  aiItinerary: DayItinerary[] = [];
 
   get nameControl() { return this.form.get('name') as FormControl; }
   get descriptionControl() { return this.form.get('description') as FormControl; }
@@ -138,7 +145,11 @@ export class ProposeTravelModalComponent {
       members: this.members.map(email => ({ email, status: 'pending' as 'pending' })),
       images: this.imageUrls,
       notes,
-    };
+      itinerary: (this.selectedItinerary === 'manual' || this.selectedItinerary === 'ai') ? this.manualItinerary : []
+     };
+
+    console.log('manualItinerary antes de enviar:', this.manualItinerary); // 👈 aquí
+
 
     if (this.isEditMode) {
       await this.travelService.updateTravel(this.travelId!, travelPayload);
@@ -156,7 +167,7 @@ export class ProposeTravelModalComponent {
 }
 
   @Input() travelId: string | null = null;
-  @Input() set travelData(travel: Travel | null) {
+@Input() set travelData(travel: Travel | null) {
   if (travel) {
     this.form.patchValue({
       name: travel.name,
@@ -167,9 +178,11 @@ export class ProposeTravelModalComponent {
       notes: travel.notes,
     });
     this.selectedIcon = travel.icon;
-    this.selectedItinerary = travel.itineraryType;
+    this.selectedItinerary = travel.itineraryType === 'ai' ? 'manual' : travel.itineraryType;
     this.members = travel.members.map(m => m.email);
     this.imageUrls = travel.images;
+    this.manualItinerary = travel.itinerary ?? [];
+    this.cdr.detectChanges();
   }
 }
 

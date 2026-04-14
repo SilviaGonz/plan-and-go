@@ -5,5 +5,11 @@
     "pathRewrite": {
       "^/resend-api": ""
     }
-  }
+  },
+"/groq-api": {
+  "target": "https://api.groq.com",
+  "changeOrigin": true,
+  "pathRewrite": { "^/groq-api": "" },
+  "secure": true
+}
 }

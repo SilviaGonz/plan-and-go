@@ -1,0 +1,98 @@
+<div class="expenses">
+  <button class="expenses__add-btn" (click)="showModal = true">
+    Añadir gasto a <strong>{{ travel?.name }}</strong>
+  </button>
+
+  <div class="expenses__summary" *ngIf="expenses.length > 0">
+    <div class="expenses__summary-item">
+      <span class="expenses__summary-label">Total gastado</span>
+      <span class="expenses__summary-value"
+        >{{ totalAmount | number: "1.2-2" }}€</span
+      >
+    </div>
+    <div class="expenses__summary-item">
+      <span class="expenses__summary-label">Total por persona</span>
+      <span class="expenses__summary-value"
+        >{{ totalPerPerson | number: "1.2-2" }}€</span
+      >
+    </div>
+  </div>
+
+  <div class="expenses__list" *ngIf="filteredExpenses.length > 0">
+    <div class="expenses__item" *ngFor="let expense of filteredExpenses">
+      <div class="expenses__item-main">
+        <div class="expenses__item-left">
+          <div class="expenses__item-icon">
+            <i [class]="'bi ' + expense.icon"></i>
+          </div>
+          <div class="expenses__item-info">
+            <h4 class="expenses__item-name">{{ expense.name }}</h4>
+            <p class="expenses__item-meta">
+              Pagado por {{ expense.paidByName }} ·
+              {{ expense.date | date: "d 'de' MMMM 'de' yyyy" }}
+            </p>
+          </div>
+        </div>
+        <div class="expenses__item-right">
+          <span class="expenses__item-amount"
+            >{{ expense.amount | number: "1.2-2" }}€</span
+          >
+          <span class="expenses__item-per-person"
+            >{{ expense.amountPerPerson | number: "1.2-2" }}€/pp</span
+          >
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="expenses__item-toggle"
+        (click)="navigateToExpense(expense.id!)"
+      >
+        Ver el desgloce del pago
+      </button>
+
+      <div
+        class="expenses__item-detail"
+        *ngIf="expandedExpenseId === expense.id"
+      >
+        <p *ngIf="expense.description">{{ expense.description }}</p>
+        <div class="expenses__item-breakdown">
+          <span
+            >Importe total:
+            <strong>{{ expense.amount | number: "1.2-2" }}€</strong></span
+          >
+          <span
+            >Nº personas: <strong>{{ travel?.membersCount }}</strong></span
+          >
+          <span
+            >Por persona:
+            <strong
+              >{{ expense.amountPerPerson | number: "1.2-2" }}€</strong
+            ></span
+          >
+        </div>
+        <img
+          *ngIf="expense.receiptUrl"
+          [src]="expense.receiptUrl"
+          alt="ticket"
+          class="expenses__receipt"
+        />
+      </div>
+    </div>
+  </div>
+
+  <p class="expenses__empty" *ngIf="filteredExpenses.length === 0">
+    {{
+      searchQuery
+        ? "No se encontraron gastos"
+        : "No hay gastos registrados aún. ¡Añade el primero!"
+    }}
+  </p>
+</div>
+
+<app-propose-expense-modal
+  *ngIf="showModal"
+  [travel]="travel"
+  (close)="showModal = false"
+  (created)="onExpenseCreated()"
+/>

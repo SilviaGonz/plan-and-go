@@ -1,6 +1,12 @@
 <header class="header">
   <div class="header__search">
-    <input type="text" placeholder="Buscar viajes, miembros..." />
+    <input
+      type="text"
+      [placeholder]="searchPlaceholder"
+      [(ngModel)]="searchText"
+      (input)="onSearch()"
+      [disabled]="isSearchDisabled"
+    />
     <i class="bi bi-search"></i>
   </div>
 

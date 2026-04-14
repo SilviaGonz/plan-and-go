@@ -10,5 +10,6 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'trips/:id', loadComponent: () => import('./pages/home/trip-detail/trip-detail.component').then(m => m.TripDetailComponent) },
+  { path: 'trips/:id/expenses/:expenseId', loadComponent: () => import('./pages/home/expense-detail/expense-detail.component').then(m => m.ExpenseDetailComponent) },
   { path: 'invite/:token', loadComponent: () => import('./pages/home/invite/invite.component').then(m => m.InviteComponent) },
 ];
