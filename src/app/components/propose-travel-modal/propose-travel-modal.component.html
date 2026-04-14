@@ -141,6 +141,7 @@
               <app-itinerary-ia-builder
                 [startDate]="startDateControl.value"
                 [endDate]="endDateControl.value"
+                [travelName]="nameControl.value"
                 (itineraryGenerated)="
                   aiItinerary = $event; manualItinerary = $event
                 "

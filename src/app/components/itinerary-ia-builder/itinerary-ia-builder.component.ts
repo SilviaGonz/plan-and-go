@@ -21,6 +21,7 @@ export interface AiItineraryConfig {
 export class ItineraryIaBuilderComponent {
   @Input() startDate: string = '';
   @Input() endDate: string = '';
+  @Input() travelName: string = '';
   @Output() itineraryGenerated = new EventEmitter<DayItinerary[]>();
 
   activities: string[] = ['', ''];
@@ -101,13 +102,33 @@ export class ItineraryIaBuilderComponent {
     const priorityLabel = this.priority === 'minimize-distance' ? 'minimizar distancias' : 'minimizar tiempo';
     const paceLabel = { relaxed: 'relajado', moderate: 'moderado', intense: 'intenso' }[this.pace];
 
-    const prompt = `Eres un experto en planificación de viajes.
-Tengo un viaje del ${this.startDate} al ${this.endDate} (${this.dayCount} días).
-Actividades que quiero hacer: ${this.filledActivities.join(', ')}.
-Preferencia de optimización: ${priorityLabel}.
-Ritmo del viaje: ${paceLabel}.
+    const paceInstructions = {
+      relaxed: 'máximo 2-3 actividades por día, con descansos amplios entre ellas y ninguna actividad antes de las 10:00',
+      moderate: 'entre 3-4 actividades por día bien distribuidas a lo largo del día',
+      intense: 'entre 4-5 actividades por día aprovechando al máximo cada jornada desde las 8:00'
+    }[this.pace];
 
-Organiza estas actividades por días de forma óptima y devuelve SOLO un JSON válido con esta estructura exacta, sin texto adicional ni backticks:
+    const priorityInstructions = this.priority === 'minimize-distance'
+      ? 'agrupa las actividades geográficamente para minimizar desplazamientos entre ellas dentro de cada día'
+      : 'prioriza el orden que permita completar más actividades en menos tiempo, considerando horarios de apertura típicos';
+
+    const prompt = `Eres un experto planificador de viajes con amplio conocimiento del destino.
+
+VIAJE: "${this.travelName}"
+FECHAS: del ${this.startDate} al ${this.endDate} (${this.dayCount} días)
+ACTIVIDADES DESEADAS: ${this.filledActivities.join(', ')}
+
+INSTRUCCIONES:
+- Distribuye las actividades de forma lógica y coherente entre los ${this.dayCount} días
+- Ritmo ${paceLabel}: ${paceInstructions}
+- Optimización: ${priorityInstructions}
+- Asigna horarios realistas teniendo en cuenta el tiempo necesario para cada actividad
+- Si hay pocas actividades para los días disponibles, añade actividades complementarias relacionadas con el destino y coherentes con las que el usuario ya ha indicado
+- No repitas actividades
+- El primer día puede incluir llegada/traslado si tiene sentido
+- El último día puede incluir regreso si tiene sentido
+
+Devuelve SOLO un JSON válido con esta estructura exacta, sin texto adicional ni backticks ni explicaciones:
 [
   {
     "date": "YYYY-MM-DD",
@@ -117,7 +138,7 @@ Organiza estas actividades por días de forma óptima y devuelve SOLO un JSON v�
     ]
   }
 ]
-Las fechas deben estar entre ${this.startDate} y ${this.endDate}. Asigna horas realistas según el ritmo ${paceLabel}.`;
+Las fechas deben estar entre ${this.startDate} y ${this.endDate}.`;
 
     const response = await fetch('/groq-api/openai/v1/chat/completions', {
       method: 'POST',
@@ -126,10 +147,10 @@ Las fechas deben estar entre ${this.startDate} y ${this.endDate}. Asigna horas r
         'Authorization': `Bearer ${environment.groqApiKey}`
       },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
+        model: 'llama-3.3-70b-versatile',
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 2000,
-        temperature: 0.7
+        temperature: 0.5
       })
     });
 
@@ -144,13 +165,13 @@ Las fechas deben estar entre ${this.startDate} y ${this.endDate}. Asigna horas r
     const parsed = JSON.parse(clean);
 
     return parsed.map((day: any) => ({
-  date: new Date(day.date + 'T00:00:00'),
-  label: day.label,
-  activities: day.activities.map((act: any) => ({
-    name: act.name,
-    time: act.time?.split('-')[0]?.trim() || '00:00'
-  }))
-}));
+      date: new Date(day.date + 'T00:00:00'),
+      label: day.label,
+      activities: day.activities.map((act: any) => ({
+        name: act.name,
+        time: act.time?.split('-')[0]?.trim() || '00:00'
+      }))
+    }));
   }
 
   resetToForm(): void {

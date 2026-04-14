@@ -16,6 +16,7 @@ import { ArchiveTravelModalComponent } from "../../../components/archive-travel-
 import { ArchivedTripCardComponent } from "../../../components/archived-trip-card/archived-trip-card.component";
 import { Router } from '@angular/router';
 import { ActivityService } from '../../../services/activity.service';
+import { ExpenseService } from '../../../services/expense.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,24 +32,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private travelService = inject(TravelService);
   private router = inject(Router);
   private activityService = inject(ActivityService);
+  private expenseService = inject(ExpenseService);
 
 
   firstName = '';
   showModal = false;
   travels: Travel[] = [];
   nextTrip: Travel | null = null;
+  tripExpenses: { [travelId: string]: number } = {};
+  searchQuery = '';
 
- ngOnInit() {
+ngOnInit() {
+   this.uiService.setActiveTab('dashboard');
   onAuthStateChanged(this.auth, async (user) => {
-    console.log('usuario:', user);
     if (user?.displayName) {
       this.firstName = user.displayName.split(' ')[0];
     }
     if (user) {
-      console.log('llamando a loadTravels...');
       await this.loadTravels();
-    } else {
-      console.log('no hay usuario');
     }
   });
 
@@ -56,6 +57,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.uiService.openProposeTravelModal.subscribe(() => {
       this.showModal = true;
     })
+  );
+
+  this.subscription.add(
+    this.uiService.searchQuery.subscribe(query => {
+      this.searchQuery = query;
+    })
+  );
+}
+
+onSearch(query: string): void {
+  this.searchQuery = query;
+}
+
+get filteredTravels(): Travel[] {
+  if (!this.searchQuery.trim()) return this.travels;
+  const q = this.searchQuery.toLowerCase();
+  return this.travels.filter(t =>
+    t.name.toLowerCase().includes(q) ||
+    t.members.some(m => m.email.toLowerCase().includes(q))
   );
 }
 
@@ -74,6 +94,10 @@ async loadTravels() {
   } catch (error) {
     console.error('error cargando viajes:', error);
   }
+  for (const travel of this.travels) {
+  const expenses = await this.expenseService.getExpenses(travel.id!);
+  this.tripExpenses[travel.id!] = expenses.reduce((sum, e) => sum + e.amountPerPerson, 0);
+}
 }
 
   get daysUntilNextTrip(): number {
@@ -197,7 +221,15 @@ async openArchivedModal() {
 }
 
 onAddExpense() {
-  if (this.nextTrip?.id) this.router.navigate(['/trips', this.nextTrip.id], { fragment: 'gastos' });
+  if (this.nextTrip?.id) {
+    this.router.navigate(['/trips', this.nextTrip.id], { fragment: 'gastos' });
+  } else {
+    this.toastMessage = 'No tienes viajes próximos';
+    this.toastSubmessage = 'Crea un viaje para poder añadir gastos';
+    this.toastType = 'warning';
+    this.toastIcon = 'bi-exclamation-circle';
+    this.showToast = true;
+  }
 }
 
 async onVote() {

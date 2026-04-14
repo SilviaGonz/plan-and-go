@@ -11,11 +11,15 @@ import { Travel } from '../../../models/travel';
 import { Activity } from '../../../models/activity';
 import { ProposeActivityModalComponent } from '../../../components/propose-activity-modal/propose-activity-modal.component';
 import { ProposeTravelModalComponent } from '../../../components/propose-travel-modal/propose-travel-modal.component';
+import { TripCalendarComponent } from "../../../components/trip-calendar/trip-calendar.component";
+import { TripChatComponent } from "../../../components/trip-chat/trip-chat.component";
+import { TripExpensesComponent } from "../../../components/trip-expenses/trip-expenses.component";
+import { ChatService } from '../../../services/chat.service';
 
 @Component({
   selector: 'app-trip-detail',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, ProposeActivityModalComponent, ProposeTravelModalComponent],
+  imports: [CommonModule, HeaderComponent, ProposeActivityModalComponent, ProposeTravelModalComponent, TripCalendarComponent, TripChatComponent, TripExpensesComponent],
   templateUrl: './trip-detail.component.html',
   styleUrl: './trip-detail.component.css'
 })
@@ -24,20 +28,25 @@ export class TripDetailComponent implements OnInit, OnDestroy {
   private travelService = inject(TravelService);
   private activityService = inject(ActivityService);
   private auth = inject(Auth);
-  private uiService = inject(UiService);
+  uiService = inject(UiService);
   private subscription = new Subscription();
+  private chatService = inject(ChatService);
 
   travel: Travel | null = null;
   activities: Activity[] = [];
   activeTab: 'actividades' | 'calendario' | 'gastos' | 'chat' = 'actividades';
   showProposeModal = false;
   showNewTravelModal = false;
+  unreadMessages = 0;
+  searchQuery = '';
 
   async ngOnInit() {
+    this.uiService.setActiveTab('actividades');
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.travel = await this.travelService.getTravelById(id);
       await this.loadActivities(id);
+      await this.loadUnreadCount(id);
     }
 
     this.route.fragment.subscribe(fragment => {
@@ -45,11 +54,11 @@ export class TripDetailComponent implements OnInit, OnDestroy {
       else if (fragment === 'actividades') this.activeTab = 'actividades';
     });
 
-    this.subscription.add(
-      this.uiService.openProposeTravelModal.subscribe(() => {
-        this.showNewTravelModal = true;
-      })
-    );
+  this.subscription.add(
+    this.uiService.searchQuery.subscribe(query => {
+      this.searchQuery = query;
+    })
+  );
   }
 
   ngOnDestroy() {
@@ -63,6 +72,16 @@ export class TripDetailComponent implements OnInit, OnDestroy {
   async onActivityCreated() {
     if (this.travel?.id) await this.loadActivities(this.travel.id);
   }
+
+  async loadUnreadCount(travelId: string): Promise<void> {
+  this.unreadMessages = await this.chatService.getUnreadCount(travelId);
+}
+
+async onChatTabSelected(travelId: string): Promise<void> {
+  this.activeTab = 'chat';
+  this.unreadMessages = 0;
+  await this.chatService.updateLastVisit(travelId);
+}
 
   async vote(activityId: string, type: 'up' | 'down') {
     await this.activityService.vote(activityId, type);
@@ -79,6 +98,16 @@ export class TripDetailComponent implements OnInit, OnDestroy {
     const max = this.travel?.membersCount || 0;
     return `Votación en curso: ${total}/${max} votos`;
   }
+
+  get filteredActivities(): Activity[] {
+  if (!this.searchQuery.trim()) return this.activities;
+  const q = this.searchQuery.toLowerCase();
+  return this.activities.filter(a =>
+    a.title.toLowerCase().includes(q) ||
+    a.description?.toLowerCase().includes(q) ||
+    a.proposedByName?.toLowerCase().includes(q)
+  );
+}
 
   isVotingUrgent(activity: Activity): boolean {
     if (activity.votingStatus === 'closed') return false;

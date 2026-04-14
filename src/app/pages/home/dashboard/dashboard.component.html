@@ -79,13 +79,14 @@
 
         <div class="dashboard__trips-list" *ngIf="!showingArchived">
           <app-trip-card
-            *ngFor="let trip of travels"
+            *ngFor="let trip of filteredTravels"
             [id]="trip.id!"
             [icon]="trip.icon"
             [name]="trip.name"
             [startDate]="trip.startDate"
             [endDate]="trip.endDate"
             [members]="trip.membersCount"
+            [totalExpenses]="tripExpenses[trip.id!] || 0"
             (edit)="onEditTrip($event)"
             (archive)="onArchiveTrip($event)"
             (delete)="onDeleteTrip($event)"

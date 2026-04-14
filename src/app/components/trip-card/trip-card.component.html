@@ -8,7 +8,10 @@
       <div class="trip-card__info">
         <span><i class="bi bi-calendar3"></i> {{ formattedDates }}</span>
         <span><i class="bi bi-people"></i> {{ members }} miembros</span>
-        <span><i class="bi bi-credit-card"></i> 90€</span>
+        <span
+          ><i class="bi bi-credit-card"></i>
+          {{ totalExpenses | number: "1.2-2" }}€</span
+        >
       </div>
     </div>
 
