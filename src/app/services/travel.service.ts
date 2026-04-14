@@ -24,6 +24,7 @@ export class TravelService {
       ...travel,
       itinerary: travel.itinerary?.length ? this.serializeItinerary(travel.itinerary) : [],
       createdBy: user.uid,
+      createdByEmail: user.email,
       createdAt: serverTimestamp()
     };
 console.log('itinerary a guardar:', JSON.stringify(dataToSave.itinerary)); // 👈 aquí
@@ -95,8 +96,23 @@ console.log('itinerary a guardar:', JSON.stringify(dataToSave.itinerary)); // �
 } as Travel;
   }
 
-  async updateTravel(id: string, travel: Partial<Travel>) {
+async updateTravel(id: string, travel: Partial<Travel>) {
   const docRef = doc(this.firestore, 'travels', id);
+
+  // Detectar miembros nuevos para enviar invitaciones
+  if (travel.members) {
+    const currentTravel = await getDoc(docRef);
+    const currentMembers = currentTravel.data()?.['members'] || [];
+    const currentEmails = currentMembers.map((m: any) => m.email);
+    const newEmails = travel.members
+      .map(m => m.email)
+      .filter(email => !currentEmails.includes(email));
+
+    if (newEmails.length > 0) {
+      await this.invitationService.sendInvitations(id, travel.name || '', newEmails);
+    }
+  }
+
   const dataToUpdate = {
     ...travel,
     ...(travel.itinerary ? { itinerary: this.serializeItinerary(travel.itinerary) } : {})
