@@ -15,6 +15,7 @@ export interface Travel {
   createdBy: string;
   createdAt: Date;
   archived?: boolean;
+  createdByEmail?: string;
   itinerary?: DayItinerary[];
 }
 
