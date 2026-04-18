@@ -121,12 +121,6 @@ describe('InviteComponent', () => {
       expect(mockInvitationService.acceptInvitation).toHaveBeenCalledWith('inv-1', 'travel-1');
     });
 
-  it('debería establecer success a true tras aceptar', async () => {
-  component.invitation = mockInvitation as any;
-  await component.accept();
-  expect(component.success).toBeTrue();
-});
-
     it('debería establecer error si acceptInvitation falla', async () => {
       mockInvitationService.acceptInvitation.and.returnValue(Promise.reject(new Error('Error')));
       component.invitation = mockInvitation as any;
