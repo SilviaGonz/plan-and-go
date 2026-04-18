@@ -14,9 +14,30 @@
     <button class="header__new-trip" (click)="openNewTrip()">
       + Nuevo viaje
     </button>
-    <div class="header__profile" routerLink="/profile">
+
+    <div class="header__profile" (click)="toggleProfileMenu($event)">
       <div class="header__avatar">{{ userInitial }}</div>
       <span>Ver perfil</span>
+
+      <div class="header__profile-menu" *ngIf="showProfileMenu">
+        <button class="header__profile-menu-item" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i>
+          Cerrar sesión
+        </button>
+        <button
+          class="header__profile-menu-item header__profile-menu-item--danger"
+          (click)="showDeleteAccountModal = true; showProfileMenu = false"
+        >
+          <i class="bi bi-trash"></i>
+          Eliminar perfil
+        </button>
+      </div>
     </div>
   </div>
 </header>
+
+<app-delete-account-modal
+  *ngIf="showDeleteAccountModal"
+  (cancel)="showDeleteAccountModal = false"
+  (confirm)="deleteAccount()"
+/>
