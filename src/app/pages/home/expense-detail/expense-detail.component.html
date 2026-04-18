@@ -224,7 +224,9 @@
             {{
               uploadingProof
                 ? "Subiendo..."
-                : "Arrastra una imagen aquí o haz clic para seleccionar"
+                : validating
+                  ? "Validando comprobante..."
+                  : "Arrastra una imagen aquí o haz clic para seleccionar"
             }}
           </p>
           <span>JPG, PNG o PDF (máx. 5MB)</span>
@@ -243,6 +245,9 @@
           (change)="onProofSelected($event)"
         />
       </label>
+      <span class="pay-modal__validation-error" *ngIf="validationError">{{
+        validationError
+      }}</span>
 
       <h4 class="pay-modal__section-title">
         {{ proofUploaded ? "Cantidad pagada" : "Cantidad a pagar" }}
