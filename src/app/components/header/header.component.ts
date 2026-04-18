@@ -9,7 +9,7 @@ import { DeleteAccountModalComponent } from '../delete-account-modal/delete-acco
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, DeleteAccountModalComponent],
+  imports: [CommonModule, FormsModule, DeleteAccountModalComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
