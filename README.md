@@ -1,4 +1,3 @@
-````markdown
 # Plan&Go 🌍
 
 Plan&Go es una plataforma web colaborativa para la planificación de viajes en grupo. Permite a los usuarios crear viajes, invitar a otros miembros, proponer y votar actividades, gestionar gastos compartidos y comunicarse en tiempo real mediante un chat grupal.
@@ -45,7 +44,6 @@ cd plan-and-go
 # Instalar dependencias
 npm install
 ```
-````
 
 Crea el archivo `src/environments/environment.ts` con tus credenciales:
 
