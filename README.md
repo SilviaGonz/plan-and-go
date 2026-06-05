@@ -1,27 +1,118 @@
-# PlanAndGo
+````markdown
+# Plan&Go 🌍
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.6.
+Plan&Go es una plataforma web colaborativa para la planificación de viajes en grupo. Permite a los usuarios crear viajes, invitar a otros miembros, proponer y votar actividades, gestionar gastos compartidos y comunicarse en tiempo real mediante un chat grupal.
 
-## Development server
+Desarrollado como Trabajo de Fin de Grado (TFG) en Ingeniería Informática por la Universidad de Las Palmas de Gran Canaria (ULPGC).
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+---
 
-## Code scaffolding
+## 🚀 Tecnologías
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+| Capa                       | Tecnología                          |
+| -------------------------- | ----------------------------------- |
+| Frontend                   | Angular 17                          |
+| Backend                    | Firebase (Auth, Firestore, Storage) |
+| IA                         | Groq API (llama-3.3-70b-versatile)  |
+| Validación de comprobantes | Google Cloud Vision API             |
+| Email                      | Resend                              |
+| Pruebas                    | Jasmine + Karma                     |
 
-## Build
+---
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## ✨ Funcionalidades principales
 
-## Running unit tests
+- **Autenticación** — Registro e inicio de sesión con Firebase Auth
+- **Gestión de viajes** — Crear, editar, archivar y eliminar viajes
+- **Itinerario** — Constructor manual o generado por IA con Groq
+- **Invitaciones** — Invitar miembros a unirse al viaje por email con Resend
+- **Actividades** — Proponer actividades y votar en grupo
+- **Gastos** — Registro de gastos compartidos con división automática
+- **Comprobantes** — Validación de tickets y pagos con Google Cloud Vision API
+- **Chat** — Mensajería en tiempo real
+- **Calendario** — Vista mensual del viaje con el itinerario por día
+- **Buscador global** — Filtrado de contenido por sección
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+---
 
-## Running end-to-end tests
+## ⚙️ Instalación
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```bash
+# Clonar el repositorio
+git clone https://github.com/tu-usuario/plan-and-go.git
+cd plan-and-go
 
-## Further help
+# Instalar dependencias
+npm install
+```
+````
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Crea el archivo `src/environments/environment.ts` con tus credenciales:
+
+```typescript
+export const environment = {
+  production: false,
+  firebaseConfig: {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_AUTH_DOMAIN",
+    projectId: "TU_PROJECT_ID",
+    storageBucket: "TU_STORAGE_BUCKET",
+    messagingSenderId: "TU_MESSAGING_SENDER_ID",
+    appId: "TU_APP_ID",
+    resendApiKey: "TU_RESEND_API_KEY",
+    testEmail: "TU_EMAIL_DE_PRUEBA",
+  },
+  groqApiKey: "TU_GROQ_API_KEY",
+  visionApiKey: "TU_VISION_API_KEY",
+};
+```
+
+---
+
+## 🖥️ Servidor de desarrollo
+
+```bash
+ng serve
+```
+
+Navega a `http://localhost:4200/`. La aplicación se recargará automáticamente al modificar los archivos fuente.
+
+---
+
+## 🧪 Pruebas
+
+```bash
+# Ejecutar pruebas unitarias
+ng test
+```
+
+El proyecto cuenta con **570 pruebas unitarias** implementadas con Jasmine y Karma, cubriendo componentes, servicios y páginas principales.
+
+---
+
+## 📁 Estructura del proyecto
+
+```
+src/
+├── app/
+│   ├── components/       # Componentes reutilizables
+│   ├── models/           # Interfaces y modelos de datos
+│   ├── pages/            # Páginas de la aplicación
+│   │   └── home/
+│   │       ├── dashboard/
+│   │       ├── expense-detail/
+│   │       ├── invite/
+│   │       ├── login/
+│   │       ├── register/
+│   │       └── trip-detail/
+│   └── services/         # Servicios de la aplicación
+├── environments/         # Variables de entorno
+└── assets/               # Recursos estáticos
+```
+
+---
+
+## 👩‍💻 Autora
+
+**Silvia González Torres** — Ingeniería Informática, ULPGC  
+Trabajo de Fin de Grado — Curso 2025/2026
