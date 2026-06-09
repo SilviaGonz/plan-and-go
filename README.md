@@ -6,6 +6,14 @@ Desarrollado como Trabajo de Fin de Grado (TFG) en Ingeniería Informática por 
 
 ---
 
+## 🎬 Demo en vídeo
+
+https://youtu.be/7VFk-Hx1UFE
+
+> Vídeo explicativo de la plataforma con una demostración completa de todas las funcionalidades.
+
+---
+
 ## 🚀 Tecnologías
 
 | Capa                       | Tecnología                          |
