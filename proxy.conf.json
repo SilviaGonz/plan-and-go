@@ -11,5 +11,11 @@
   "changeOrigin": true,
   "pathRewrite": { "^/groq-api": "" },
   "secure": true
+},
+"/vision-api": {
+  "target": "https://vision.googleapis.com",
+  "changeOrigin": true,
+  "pathRewrite": { "^/vision-api": "" },
+  "secure": true
 }
 }

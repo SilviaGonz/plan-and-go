@@ -108,7 +108,9 @@
               {{
                 uploadingReceipt
                   ? "Subiendo..."
-                  : "Arrastra una imagen aquí o haz clic para seleccionar"
+                  : validatingReceipt
+                    ? "Validando ticket..."
+                    : "Arrastra una imagen aquí o haz clic para seleccionar"
               }}
             </p>
             <span>JPG, PNG o PDF (máx. 5MB)</span>
@@ -120,7 +122,13 @@
               (change)="onReceiptSelected($event)"
             />
           </label>
-          <span class="form__error" *ngIf="!receiptUrl && errorMessage">
+          <span class="form__error" *ngIf="receiptValidationError">{{
+            receiptValidationError
+          }}</span>
+          <span
+            class="form__error"
+            *ngIf="!receiptUrl && errorMessage && !receiptValidationError"
+          >
             Debes adjuntar el ticket o captura
           </span>
 

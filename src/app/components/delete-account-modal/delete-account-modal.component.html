@@ -1,0 +1,36 @@
+<div class="modal-overlay" (click)="cancel.emit()">
+  <div class="delete-modal" (click)="$event.stopPropagation()">
+    <div class="delete-modal__header">
+      <i class="bi bi-exclamation-triangle"></i>
+      <h2>¿Eliminar cuenta permanentemente?</h2>
+      <p>Esta acción <strong>NO</strong> se puede deshacer</p>
+    </div>
+
+    <div class="delete-modal__warning">
+      <p><strong>Se eliminará permanentemente:</strong></p>
+      <ul>
+        <li>Tu cuenta y datos de acceso</li>
+        <li>Todos tus viajes creados</li>
+        <li>Tu historial de gastos</li>
+        <li>Tus mensajes en los chats</li>
+        <li>Tus votos en actividades</li>
+        <li>Toda tu información personal</li>
+      </ul>
+    </div>
+
+    <div class="delete-modal__footer">
+      <button class="delete-modal__cancel" (click)="cancel.emit()">
+        Cancelar
+      </button>
+      <button class="delete-modal__confirm" (click)="confirm.emit()">
+        Eliminar cuenta
+      </button>
+    </div>
+
+    <p class="delete-modal__hint">
+      <i class="bi bi-lightbulb"></i>
+      <strong>Recuerda:</strong> Si solo quieres cerrar sesión usa la opción
+      "Cerrar sesión"
+    </p>
+  </div>
+</div>

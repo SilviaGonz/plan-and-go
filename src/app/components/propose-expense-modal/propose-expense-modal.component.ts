@@ -8,6 +8,7 @@ import { ExpenseService } from '../../services/expense.service';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 import { Travel } from '../../models/travel';
 import { Auth } from '@angular/fire/auth';
+import { ReceiptValidatorService } from '../../services/receipt-validator.service';
 
 @Component({
   selector: 'app-propose-expense-modal',
@@ -30,6 +31,7 @@ export class ProposeExpenseModalComponent implements OnInit {
   private fb = inject(FormBuilder);
   private expenseService = inject(ExpenseService);
   private storage = inject(Storage);
+  private receiptValidator = inject(ReceiptValidatorService);
   auth = inject(Auth);
 
   selectedIcon = 'bi-house-fill';
@@ -37,6 +39,8 @@ export class ProposeExpenseModalComponent implements OnInit {
   errorMessage = '';
   receiptUrl = '';
   uploadingReceipt = false;
+  validatingReceipt = false;
+  receiptValidationError = '';
   today = new Date().toISOString().split('T')[0];
 
   expenseIcons = [
@@ -90,24 +94,39 @@ export class ProposeExpenseModalComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
     this.uploadingReceipt = true;
+    this.receiptValidationError = '';
+    this.receiptUrl = '';
     try {
       const file = input.files[0];
       const storageRef = ref(this.storage, `expenses/${Date.now()}_${file.name}`);
       await uploadBytes(storageRef, file);
-      this.receiptUrl = await getDownloadURL(storageRef);
+      const url = await getDownloadURL(storageRef);
+
+      // Validar el ticket con Vision API
+      this.validatingReceipt = true;
+      const result = await this.receiptValidator.validateReceipt(
+        url,
+        this.amountControl.value || 0,
+        'ticket'
+      );
+      console.log('Resultado validación ticket:', result);
+
+      if (!result.isValid) {
+        this.receiptValidationError = result.reason;
+      } else {
+        this.receiptUrl = url;
+      }
+
     } catch (e: any) {
-      this.errorMessage = e.message;
+      this.receiptValidationError = 'Error al procesar la imagen';
     } finally {
       this.uploadingReceipt = false;
+      this.validatingReceipt = false;
     }
   }
 
   async onSubmit(): Promise<void> {
     this.form.markAllAsTouched();
-    console.log('form valid:', this.form.valid);
-  console.log('form values:', this.form.value);
-  console.log('receiptUrl:', this.receiptUrl);
-  console.log('travel id:', this.travel?.id);
     if (this.form.invalid || !this.travel?.id) return;
 
     if (!this.receiptUrl) {

@@ -8,6 +8,7 @@ import { Expense } from '../../../models/expense';
 import { Travel } from '../../../models/travel';
 import { Auth } from '@angular/fire/auth';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
+import { ReceiptValidatorService } from '../../../services/receipt-validator.service';
 
 @Component({
   selector: 'app-expense-detail',
@@ -22,6 +23,7 @@ export class ExpenseDetailComponent implements OnInit {
   private expenseService = inject(ExpenseService);
   private travelService = inject(TravelService);
   private storage = inject(Storage);
+  private receiptValidator = inject(ReceiptValidatorService);
   auth = inject(Auth);
 
   expense: Expense | null = null;
@@ -35,6 +37,8 @@ export class ExpenseDetailComponent implements OnInit {
   uploadingProof = false;
   proofUploaded = false;
   confirmingPayment = false;
+  validating = false;
+  validationError = '';
 
   async ngOnInit(): Promise<void> {
     const travelId = this.route.snapshot.paramMap.get('id');
@@ -105,25 +109,44 @@ export class ExpenseDetailComponent implements OnInit {
   }
 
   openPayModal(): void {
-  this.proofUrl = '';
-  this.proofUploaded = false;
-  this.showPayModal = true;
-}
+    this.proofUrl = '';
+    this.proofUploaded = false;
+    this.validationError = '';
+    this.showPayModal = true;
+  }
 
   async onProofSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
     this.uploadingProof = true;
+    this.validationError = '';
     try {
       const file = input.files[0];
       const storageRef = ref(this.storage, `proofs/${Date.now()}_${file.name}`);
       await uploadBytes(storageRef, file);
       this.proofUrl = await getDownloadURL(storageRef);
-      this.proofUploaded = true;
+
+      // Validar el comprobante con Vision API
+      this.validating = true;
+      const result = await this.receiptValidator.validateReceipt(
+        this.proofUrl,
+        this.expense?.amountPerPerson || 0
+      );
+      console.log('Resultado validación:', result);
+
+      if (!result.isValid) {
+        this.validationError = result.reason;
+        this.proofUrl = '';
+        this.proofUploaded = false;
+      } else {
+        this.proofUploaded = true;
+      }
+
     } catch (e: any) {
-      console.error('Error subiendo comprobante:', e);
+      this.validationError = 'Error al procesar la imagen';
     } finally {
       this.uploadingProof = false;
+      this.validating = false;
     }
   }
 
@@ -133,7 +156,6 @@ export class ExpenseDetailComponent implements OnInit {
     try {
       const email = this.auth.currentUser?.email || '';
       await this.expenseService.markAsPaid(this.travel.id, this.expense.id, email, this.proofUrl);
-      // Recargar el gasto
       const expenses = await this.expenseService.getExpenses(this.travel.id);
       this.expense = expenses.find(e => e.id === this.expense!.id) || null;
       this.showPayModal = false;

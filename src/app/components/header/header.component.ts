@@ -1,14 +1,15 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, HostListener } from '@angular/core';
 import { NavigationStart, Router, RouterLink } from '@angular/router';
-import { Auth, onAuthStateChanged } from '@angular/fire/auth';
+import { Auth, onAuthStateChanged, signOut, deleteUser } from '@angular/fire/auth';
 import { CommonModule } from '@angular/common';
 import { UiService } from '../../services/ui.service';
 import { FormsModule } from '@angular/forms';
+import { DeleteAccountModalComponent } from '../delete-account-modal/delete-account-modal.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, FormsModule, DeleteAccountModalComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -21,6 +22,16 @@ export class HeaderComponent implements OnInit {
   searchText = '';
   isSearchDisabled = false;
   searchPlaceholder = 'Buscar viajes...';
+  showProfileMenu = false;
+  showDeleteAccountModal = false;
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.header__profile')) {
+      this.showProfileMenu = false;
+    }
+  }
 
   ngOnInit() {
     onAuthStateChanged(this.auth, (user) => {
@@ -55,6 +66,29 @@ export class HeaderComponent implements OnInit {
         default: this.searchPlaceholder = 'Buscar viajes...'; break;
       }
     });
+  }
+
+  toggleProfileMenu(event: Event) {
+    event.stopPropagation();
+    this.showProfileMenu = !this.showProfileMenu;
+  }
+
+  async logout() {
+    await signOut(this.auth);
+    this.router.navigate(['/login']);
+  }
+
+  async deleteAccount() {
+    this.showDeleteAccountModal = false;
+    try {
+      const user = this.auth.currentUser;
+      if (user) {
+        await deleteUser(user);
+        this.router.navigate(['/login']);
+      }
+    } catch (e: any) {
+      alert('Error al eliminar la cuenta. Por favor vuelve a iniciar sesión e inténtalo de nuevo.');
+    }
   }
 
   openNewTrip() {
